@@ -1,0 +1,11 @@
+{
+  "name": "glorzo-server",
+  "author": "kqhasaki",
+  "version": "0.1.0",
+  "dependencies": {
+    "ali-oss": "^6.18.0"
+  },
+  "devDependencies": {
+    "@types/ali-oss": "^6.16.8"
+  }
+}
