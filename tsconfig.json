@@ -14,9 +14,6 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@glorzo/*": [
-        "./*"
-      ],
       "@glorzo-player/*": [
         "./glorzo-player/src/*"
       ],
@@ -24,5 +21,10 @@
         "./server/src/*"
       ]
     }
-  }
+  },
+  "exclude": [
+    "dist",
+    ".webpack",
+    "node_modules"
+  ]
 }
