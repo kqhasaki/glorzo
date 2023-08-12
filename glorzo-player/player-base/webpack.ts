@@ -15,7 +15,7 @@ type Options = {
   tsconfigPath?: string;
 };
 
-type WebpackArgv = {
+export type WebpackArgv = {
   mode?: string;
   env?: {
     WEBPACK_SERVE?: boolean;
@@ -98,6 +98,7 @@ export function makeConfig(
       new webpack.DefinePlugin({
         // Should match webpack-defines.d.ts
         ReactNull: null, // eslint-disable-line no-restricted-syntax
+        GLORZO_PLAYER_VERSION: JSON.stringify(version),
       }),
       // https://webpack.js.org/plugins/ignore-plugin/#example-of-ignoring-moment-locales
       new webpack.IgnorePlugin({

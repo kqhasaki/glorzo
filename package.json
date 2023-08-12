@@ -12,7 +12,8 @@
   "workspaces": [
     "server",
     "glorzo-player/player-base",
-    "glorzo-player/player-desktop"
+    "glorzo-player/player-desktop",
+    "glorzo-player/player-web"
   ],
   "devDependencies": {
     "@types/jest": "^29.5.3",
