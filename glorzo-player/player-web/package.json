@@ -1,0 +1,11 @@
+{
+  "name": "glorzo-player-web",
+  "version": "0.1.0",
+  "author": {
+    "name": "kqhasaki",
+    "email": "k1664032884@gmail.com",
+    "url": "https://kuaiqiangcode.com"
+  },
+  "license": "MIT",
+  "private": true
+}
