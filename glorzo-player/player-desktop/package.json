@@ -6,6 +6,16 @@
     "email": "k1664032884@gmail.com",
     "url": "https://kuaiqiangcode.com"
   },
+  "homepage": "https://kuaiqiangcode.com",
+  "description": "A music player for your own",
+  "productName": "Glorzo Player",
+  "productDescription": "Glorzo Player for fun",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+    "clean-webpack-plugin": "^4.0.0",
+    "electron": "^25.5.0",
+    "webpack-dev-server": "^4.15.1"
+  }
 }

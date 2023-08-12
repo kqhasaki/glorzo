@@ -17,6 +17,7 @@
   ],
   "devDependencies": {
     "@types/jest": "^29.5.3",
+    "electron": "^25.5.0",
     "esbuild-loader": "2.21.0",
     "eslint": "^8.46.0",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
