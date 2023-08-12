@@ -5,6 +5,7 @@ import {
   createNewUser,
   getAllSongs,
   createNewSong,
+  Song,
 } from "@glorzo-server/db";
 import { uploadFile, downloadFile } from "@glorzo-server/oss";
 import { JSONResponseSuccessType, ResponseErrorType } from "./types";
@@ -45,7 +46,7 @@ app.get("/users", async (_, res) => {
 app.get("/songs", async (_, res) => {
   try {
     const songs = await getAllSongs();
-    const successRes: JSONResponseSuccessType = {
+    const successRes: JSONResponseSuccessType<Song[]> = {
       success: true,
       data: songs,
     };
@@ -72,9 +73,7 @@ app.post("/uploadFile", (req, res) => {
 
   req.on("end", async () => {
     const dataBuffer = Buffer.concat(chunks);
-    const filename = decodeURIComponent(
-      (req.headers["x-filename"] ?? "unknown") as string
-    );
+    const filename = decodeURIComponent((req.headers["x-filename"] ?? "unknown") as string);
     const ossResult = await uploadFile(filename, dataBuffer);
     res.status(200).json({ ...ossResult });
   });

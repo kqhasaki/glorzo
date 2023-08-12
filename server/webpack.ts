@@ -4,7 +4,8 @@ import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
 const config: Configuration = {
   target: "node",
-  entry: "@glorzo-server/app/index.ts",
+  context: path.resolve(__dirname, "."),
+  entry: "./src/app/index.ts",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, ".webpack"),

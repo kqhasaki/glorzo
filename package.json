@@ -34,7 +34,7 @@
   },
   "scripts": {
     "test:server": "jest --config server/jest.config.ts",
-    "dev:server": "webpack --config server/webpack.ts --mode development && kill-port 3000 && node server/.webpack/bundle.js",
+    "dev:server": "webpack --progress --config server/webpack.ts --mode development && kill-port 3000 && node server/.webpack/bundle.js",
     "desktop:serve": "webpack serve --mode development --progress --config glorzo-player/player-desktop/webpack.config.ts",
     "desktop:start": "electron glorzo-player/player-desktop/.webpack",
     "web:build:dev": "webpack --mode development --progress --config glorzo-player/player-web/webpack.config.ts",

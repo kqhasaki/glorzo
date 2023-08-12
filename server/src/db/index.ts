@@ -81,23 +81,26 @@ export async function createNewUser(
     throw Error("用户名已经被占用");
   }
   const date = moment().format("YYYY-MM-DD HH:mm:ss");
-  await pool.query(
-    "INSERT INTO user (name, password, createDate, friends) VALUES (?, ?, ?, ?)",
-    [name, password, date, "[]"]
-  );
+  await pool.query("INSERT INTO user (name, password, createDate, friends) VALUES (?, ?, ?, ?)", [
+    name,
+    password,
+    date,
+    "[]",
+  ]);
 }
 
 export async function getAllSongs(): Promise<Song[]> {
-  const [songs] = await pool.query("SElECT * FROM music");
+  const [songs] = await pool.query("SElECT * FROM song");
   return songs as Song[];
 }
 
-export async function createNewSong(
-  createSongOptions: Omit<Song, "id">
-): Promise<void> {
+export async function createNewSong(createSongOptions: Omit<Song, "id">): Promise<void> {
   const { mp3, cover, artist, uploader, name } = createSongOptions;
-  await pool.query(
-    "INSERT INTO song (name, artist, cover, uploader, mp3) VALUES (?, ?, ?, ?, ?)",
-    [name, artist, cover, uploader, mp3]
-  );
+  await pool.query("INSERT INTO song (name, artist, cover, uploader, mp3) VALUES (?, ?, ?, ?, ?)", [
+    name,
+    artist,
+    cover,
+    uploader,
+    mp3,
+  ]);
 }
