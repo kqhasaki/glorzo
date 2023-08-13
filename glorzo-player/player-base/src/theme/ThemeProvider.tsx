@@ -16,7 +16,8 @@ export function ThemeProvider({ children }: { children: ReactNode }): JSX.Elemen
 
             // https://github.com/necolas/normalize.css/blob/master/normalize.css#L12
             lineHeight: 1.15,
-            background: theme.palette.background.primary,
+            // background: theme.palette.background.primary,
+            backgroundColor: "transparent",
             color: theme.palette.text.primary,
           },
           "*, *:before, *:after": {

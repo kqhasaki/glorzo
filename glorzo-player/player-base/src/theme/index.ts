@@ -13,13 +13,17 @@ type Theme = {
       paper: string;
       primary: string;
       secondary: string;
+      transparent: string;
     };
     text: {
       primary: string;
       secondary: string;
       highlight: string;
     };
-    divider: string;
+    divider: {
+      primary: string;
+      secondary: string;
+    };
   };
 };
 
@@ -52,16 +56,20 @@ const darkTheme: Theme = {
   breakpoints,
   palette: {
     background: {
-      paper: "rgb(37, 36, 32)",
-      primary: "rgba(30, 28, 22)",
+      paper: "rgb(44, 33, 31)",
+      primary: "rgba(32, 32, 32)",
       secondary: "rgba(30, 30, 30)",
+      transparent: "rgba(44, 33, 31, 0.8)",
     },
     text: {
-      primary: "rgba(245, 245, 245)",
+      primary: "rgba(118, 107, 104)",
       secondary: "rgba(187, 187, 188)",
       highlight: "rgba(180, 136, 82)",
     },
-    divider: "rgba(119, 102, 68)",
+    divider: {
+      primary: "#000",
+      secondary: "rgba(55, 45, 52)",
+    },
   },
 };
 
@@ -72,13 +80,17 @@ const brightTheme: Theme = {
       paper: "rgba(255, 255, 255)",
       primary: "rgba(245, 245, 245)",
       secondary: "rgba(100, 100, 200)",
+      transparent: "rgba(25, 25, 25, 0.5)",
     },
     text: {
       primary: "rgba(30, 30, 30)",
       secondary: "rgba(45, 45, 45)",
       highlight: "rgba(180, 136, 82)",
     },
-    divider: "rgba(220, 220, 220)",
+    divider: {
+      primary: "#000",
+      secondary: "rgba(32, 32, 32)",
+    },
   },
 };
 

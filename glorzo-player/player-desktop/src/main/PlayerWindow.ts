@@ -35,11 +35,10 @@ function newPlayerWindow(): BrowserWindow {
   const windowOptions: BrowserWindowConstructorOptions = {
     height: 800,
     width: 1200,
-    minWidth: 400,
-    minHeight: 300,
+    minWidth: 800,
+    minHeight: 600,
     autoHideMenuBar: true,
     title: GLORZO_PRODUCT_NAME,
-    frame: isLinux ? false : true,
     titleBarStyle: "hidden",
     webPreferences: {
       contextIsolation: true,
@@ -48,6 +47,8 @@ function newPlayerWindow(): BrowserWindow {
       nodeIntegration: false,
       webSecurity: isProduction,
     },
+    vibrancy: "sidebar",
+    visualEffectState: "followWindow",
   };
 
   const browserWindow = new BrowserWindow(windowOptions);
