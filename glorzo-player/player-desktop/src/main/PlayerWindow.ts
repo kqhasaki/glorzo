@@ -4,9 +4,6 @@ import { GLORZO_PRODUCT_NAME } from "../common/webpackDefines";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
-// const isMac = process.platform === "darwin";
-const isLinux = process.platform === "linux";
-// const isWindows = process.platform === "win32";
 const isProduction = process.env.NODE_ENV === "production";
 const rendererPath = MAIN_WINDOW_WEBPACK_ENTRY;
 

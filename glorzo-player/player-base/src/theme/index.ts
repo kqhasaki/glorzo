@@ -14,6 +14,7 @@ type Theme = {
       primary: string;
       secondary: string;
       transparent: string;
+      highlight: string;
     };
     text: {
       primary: string;
@@ -59,12 +60,13 @@ const darkTheme: Theme = {
       paper: "rgb(44, 33, 31)",
       primary: "rgba(32, 32, 32)",
       secondary: "rgba(30, 30, 30)",
+      highlight: "rgba(194, 56, 48)",
       transparent: "rgba(44, 33, 31, 0.8)",
     },
     text: {
-      primary: "rgba(118, 107, 104)",
+      primary: "rgba(255, 255, 255)",
       secondary: "rgba(187, 187, 188)",
-      highlight: "rgba(180, 136, 82)",
+      highlight: "rgba(250, 250, 250)",
     },
     divider: {
       primary: "#000",
@@ -80,16 +82,17 @@ const brightTheme: Theme = {
       paper: "rgba(255, 255, 255)",
       primary: "rgba(245, 245, 245)",
       secondary: "rgba(100, 100, 200)",
-      transparent: "rgba(25, 25, 25, 0.5)",
+      transparent: "rgba(255, 255, 255, 0.8)",
+      highlight: "rgba(194, 56, 48)",
     },
     text: {
-      primary: "rgba(30, 30, 30)",
-      secondary: "rgba(45, 45, 45)",
-      highlight: "rgba(180, 136, 82)",
+      primary: "rgba(39, 39, 39)",
+      secondary: "rgba(150, 150, 150)",
+      highlight: "rgba(250, 250, 250)",
     },
     divider: {
-      primary: "#000",
-      secondary: "rgba(32, 32, 32)",
+      primary: "rgba(192, 189, 188)",
+      secondary: "rgba(236, 236, 236)",
     },
   },
 };
