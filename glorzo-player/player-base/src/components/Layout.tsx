@@ -1,6 +1,8 @@
 import { makeStyles } from "@glorzo-player/theme";
 import { Navigator } from "@glorzo-player/components/Navigator";
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
+import { useCallback } from "react";
+import { clsx } from "clsx";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -45,6 +47,11 @@ const useStyles = makeStyles()((theme) => ({
       backgroundColor: "transparent",
     },
   },
+  hideScrollbar: {
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "transparent",
+    },
+  },
   header: {
     zIndex: 99,
     height: "52px",
@@ -59,6 +66,23 @@ const useStyles = makeStyles()((theme) => ({
 
 export default function Layout({ content }: { content: ReactNode }): JSX.Element {
   const { classes } = useStyles();
+  const mainWrapper = useRef<HTMLDivElement>(null);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleScroll = useCallback(() => {
+    if (!mainWrapper.current) {
+      return;
+    }
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+    mainWrapper.current.classList.remove(classes.hideScrollbar);
+    scrollTimeout.current = setTimeout(() => {
+      if (mainWrapper.current) {
+        mainWrapper.current.classList.add(classes.hideScrollbar);
+      }
+    }, 1000);
+  }, [classes.hideScrollbar]);
 
   return (
     <div className={classes.root}>
@@ -67,7 +91,13 @@ export default function Layout({ content }: { content: ReactNode }): JSX.Element
       </div>
       <div className={classes.main}>
         <div className={classes.header}></div>
-        <div className={classes.content}>{content}</div>
+        <div
+          ref={mainWrapper}
+          onScroll={handleScroll}
+          className={clsx({ [classes.hideScrollbar]: true, [classes.content]: true })}
+        >
+          {content}
+        </div>
       </div>
     </div>
   );
