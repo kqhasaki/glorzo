@@ -35,7 +35,7 @@ const useStyles = makeStyles()((theme) => ({
       width: "6px",
     },
     "&::-webkit-scrollbar-thumb": {
-      backgroundColor: theme.palette.text.primary,
+      backgroundColor: theme.palette.text.secondary,
       borderRadius: "5px",
     },
     "&::-webkit-scrollbar-trak": {
@@ -53,7 +53,7 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     background: theme.palette.background.transparent,
     borderBottom: `0.5px solid ${theme.palette.divider.secondary}`,
-    backdropFilter: "blur(10px)",
+    backdropFilter: "blur(30px)",
   },
 }));
 

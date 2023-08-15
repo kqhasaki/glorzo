@@ -1,5 +1,5 @@
 import type { JSONResponseSuccessType, ResponseErrorType } from "@glorzo-server/app/types";
-import type { Song } from "@glorzo-server/db";
+import type { Song } from "@glorzo-player/types/server";
 
 export const API_BASE_URL = "http://localhost:3000";
 
@@ -11,4 +11,8 @@ export async function getAllSongs(): Promise<Song[]> {
   const songs = res.data;
 
   return songs;
+}
+
+export function getDownloadUrl(target: string): string {
+  return `${API_BASE_URL}/download?target=${encodeURIComponent(target)}`;
 }

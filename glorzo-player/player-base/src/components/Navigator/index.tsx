@@ -21,6 +21,11 @@ const useStyles = makeStyles()((theme) => ({
     background: theme.palette.background.highlight,
     color: theme.palette.text.highlight,
   },
+  title: {
+    fontSize: "12px",
+    padding: "8px 20px",
+    color: theme.palette.text.secondary,
+  },
 }));
 
 export function Navigator(): JSX.Element {
@@ -28,6 +33,7 @@ export function Navigator(): JSX.Element {
 
   return (
     <ul className={classes.wrapper}>
+      <h3 className={classes.title}>Glorzo Music</h3>
       {routes.map((route) => (
         <NavLink
           className={({ isActive }) =>
