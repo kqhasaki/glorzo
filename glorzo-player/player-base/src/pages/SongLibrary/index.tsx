@@ -2,7 +2,7 @@ import { makeStyles } from "@glorzo-player/theme";
 import { useAllSongs } from "./hooks";
 import { SongCard } from "@glorzo-player/components/SongCard";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(() => ({
   mainWrapper: {
     padding: "64px 36px",
   },
