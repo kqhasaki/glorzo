@@ -61,7 +61,6 @@ export default function UploadItem({ file }: UploadItemPropsType): JSX.Element {
   useEffect(() => {
     jsmediatags.read(file, {
       onSuccess(parsedTags) {
-        console.log(parsedTags);
         const { picture, title, artist, album } = parsedTags.tags;
         setTags({
           picture: {

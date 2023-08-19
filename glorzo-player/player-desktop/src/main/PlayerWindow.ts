@@ -18,9 +18,11 @@ class PlayerWindow {
     this.browserWindow
       .loadURL(rendererPath)
       .then(() => {
+        // eslint-disable-next-line no-console
         console.info("window URL loaded");
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error("loadURL error", err);
       });
   }

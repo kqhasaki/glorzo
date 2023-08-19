@@ -54,17 +54,20 @@ export default function Upload(): JSX.Element {
     }
   }, [classes]);
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (uploader.current) {
-      uploader.current.classList.remove(classes.dragOver);
-    }
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLElement>) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (uploader.current) {
+        uploader.current.classList.remove(classes.dragOver);
+      }
 
-    if (file != undefined && file.type.startsWith("audio")) {
-      setSongFiles((prev) => [...prev, file]);
-    }
-  }, []);
+      if (file != undefined && file.type.startsWith("audio")) {
+        setSongFiles((prev) => [...prev, file]);
+      }
+    },
+    [classes.dragOver]
+  );
 
   const handleClick = useCallback(() => {
     if (fileInput.current) {
@@ -78,8 +81,6 @@ export default function Upload(): JSX.Element {
       setSongFiles((prev) => [...prev, file]);
     }
   }, []);
-
-  console.log(songFiles);
 
   return (
     <main className={classes.mainWrapper}>

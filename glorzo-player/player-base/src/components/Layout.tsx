@@ -2,7 +2,6 @@ import { makeStyles } from "@glorzo-player/theme";
 import { Navigator } from "@glorzo-player/components/Navigator";
 import { ReactNode, useRef } from "react";
 import { useCallback } from "react";
-import { ipcRenderer } from "electron";
 import { clsx } from "clsx";
 
 const useStyles = makeStyles()((theme) => ({
