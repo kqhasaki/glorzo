@@ -20,7 +20,7 @@ export default function SongLibrary(): JSX.Element {
 
   return (
     <main className={classes.mainWrapper}>
-      <h1>所有歌曲</h1>
+      <h1>All Songs</h1>
       <section className={classes.gallery}>
         {allSongs.map((song) => (
           <SongCard song={song} key={song.id} />

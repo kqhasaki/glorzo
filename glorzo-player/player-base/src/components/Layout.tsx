@@ -2,6 +2,7 @@ import { makeStyles } from "@glorzo-player/theme";
 import { Navigator } from "@glorzo-player/components/Navigator";
 import { ReactNode, useRef } from "react";
 import { useCallback } from "react";
+import { ipcRenderer } from "electron";
 import { clsx } from "clsx";
 
 const useStyles = makeStyles()((theme) => ({
@@ -61,6 +62,15 @@ const useStyles = makeStyles()((theme) => ({
     background: theme.palette.background.transparent,
     borderBottom: `0.5px solid ${theme.palette.divider.secondary}`,
     backdropFilter: "blur(30px)",
+    WebkitAppRegion: "drag",
+  },
+  navbarHeader: {
+    zIndex: 99,
+    height: "52px",
+    position: "fixed",
+    top: 0,
+    width: "100%",
+    WebkitAppRegion: "drag",
   },
 }));
 
@@ -87,6 +97,7 @@ export default function Layout({ content }: { content: ReactNode }): JSX.Element
   return (
     <div className={classes.root}>
       <div className={classes.navbar}>
+        <div className={classes.navbarHeader}></div>
         <Navigator />
       </div>
       <div className={classes.main}>

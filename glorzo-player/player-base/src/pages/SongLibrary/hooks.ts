@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAllSongs } from "@glorzo-player/api/request";
-import type { Song } from "@glorzo-player/types/server";
+import type { Song } from "@glorzo-server/db";
 
 export const useAllSongs = (): Song[] => {
   const [songs, setSongs] = useState<Song[]>([]);

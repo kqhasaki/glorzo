@@ -81,13 +81,13 @@ const brightTheme: Theme = {
     background: {
       paper: "rgba(255, 255, 255)",
       primary: "rgba(245, 245, 245)",
-      secondary: "rgba(100, 100, 200)",
+      secondary: "rgba(250, 250, 250)",
       transparent: "rgba(255, 255, 255, 0.8)",
       highlight: "rgba(194, 56, 48)",
     },
     text: {
       primary: "rgba(39, 39, 39)",
-      secondary: "rgba(150, 150, 150)",
+      secondary: "rgba(129, 129, 129)",
       highlight: "rgba(250, 250, 250)",
     },
     divider: {

@@ -1,4 +1,4 @@
-import type { Song } from "@glorzo-player/types/server";
+import type { Song } from "@glorzo-server/db";
 import { getDownloadUrl } from "@glorzo-player/api/request";
 import { makeStyles } from "@glorzo-player/theme";
 
@@ -28,10 +28,10 @@ export function SongCard({ song }: { song: Song }): JSX.Element {
   return (
     <article className={classes.wrapper}>
       <img draggable={false} className={classes.image} src={getDownloadUrl(song.cover)}></img>
-      <p>
+      <div>
         <p className={classes.title}>{song.name}</p>
         <p className={classes.artist}>{song.artist}</p>
-      </p>
+      </div>
     </article>
   );
 }

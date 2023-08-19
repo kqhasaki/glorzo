@@ -30,17 +30,51 @@ export type WebpackArgv = {
 export function makeConfig(
   argv: WebpackArgv,
   options: Options
-): Pick<Configuration, "resolve" | "module" | "optimization" | "plugins" | "node"> {
+): Pick<Configuration, "resolve" | "module" | "optimization" | "plugins" | "node" | "externals"> {
   const isDev = argv.mode === "development";
   const isServe = argv.env?.WEBPACK_SERVE ?? false;
 
   const { allowUnusedVariables = isDev && isServe, version, tsconfigPath } = options;
 
   return {
+    // Workaround for https://github.com/aadsm/jsmediatags/issues/116
+    externals: {
+      "react-native-fs": "reactNativeFs",
+    },
     resolve: {
       extensions: [".js", ".ts", ".jsx", ".tsx"],
       alias: {
         "@glorzo-player": path.resolve(__dirname, "src"),
+      },
+      fallback: {
+        path: require.resolve("path-browserify"),
+        stream: require.resolve("readable-stream"),
+        zlib: require.resolve("browserify-zlib"),
+        crypto: require.resolve("crypto-browserify"),
+
+        // TypeScript tries to use this when running in node
+        perf_hooks: false,
+        // Yarn patches these imports into TypeScript for PnP support
+        // https://github.com/microsoft/TypeScript/pull/35206
+        // https://github.com/yarnpkg/berry/pull/2889#issuecomment-849905154
+        module: false,
+
+        // These are optional for react-mosaic-component
+        "@blueprintjs/core": false,
+        "@blueprintjs/icons": false,
+        domain: false,
+
+        // don't inject these things into our web build
+        fs: false,
+        pnpapi: false,
+
+        // punycode is a dependency for some older webpack v4 browser libs
+        // It adds unecessary bloat to the build so we make sure it isn't included
+        punycode: false,
+
+        // Workaround for https://github.com/react-dnd/react-dnd/issues/3423
+        "react/jsx-runtime": "react/jsx-runtime.js",
+        "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
       },
     },
     module: {
