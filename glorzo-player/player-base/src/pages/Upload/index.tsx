@@ -2,7 +2,9 @@ import { makeStyles } from "@glorzo-player/theme";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useRef, useState } from "react";
 import UploadItem, { UploadHeader } from "./UploadItem";
+import type { Song } from "@glorzo-player/types/Song";
 import { Button } from "@glorzo-player/components/Button";
+import { parseSongFromFile } from "@glorzo-player/utils";
 
 const useStyles = makeStyles()((theme) => ({
   mainWrapper: {
@@ -42,7 +44,7 @@ export default function Upload(): JSX.Element {
   const { classes } = useStyles();
   const uploader = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const [songFiles, setSongFiles] = useState<File[]>([]);
+  const [songs, setSongs] = useState<Song[]>([]);
 
   const handleDragOver = useCallback(
     (e: React.DragEvent<HTMLElement>) => {
@@ -61,7 +63,7 @@ export default function Upload(): JSX.Element {
   }, [classes]);
 
   const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLElement>) => {
+    async (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
       const file = e.dataTransfer.files[0];
       if (uploader.current) {
@@ -69,7 +71,8 @@ export default function Upload(): JSX.Element {
       }
 
       if (file != undefined && file.type.startsWith("audio")) {
-        setSongFiles((prev) => [...prev, file]);
+        const song = await parseSongFromFile(file);
+        setSongs((prev) => [...prev, song]);
       }
     },
     [classes.dragOver]
@@ -81,10 +84,11 @@ export default function Upload(): JSX.Element {
     }
   }, []);
 
-  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file != undefined) {
-      setSongFiles((prev) => [...prev, file]);
+      const song = await parseSongFromFile(file);
+      setSongs((prev) => [...prev, song]);
     }
   }, []);
 
@@ -92,9 +96,9 @@ export default function Upload(): JSX.Element {
     <main className={classes.mainWrapper}>
       <h1>Upload</h1>
       <div className={classes.uploadForm}>
-        {songFiles.length > 0 && <UploadHeader />}
-        {songFiles.map((songFile, idx) => (
-          <UploadItem file={songFile} key={idx} />
+        {songs.length > 0 && <UploadHeader />}
+        {songs.map((song, idx) => (
+          <UploadItem song={song} key={idx} />
         ))}
       </div>
       <div className={classes.uploaderContainer}>
@@ -115,7 +119,7 @@ export default function Upload(): JSX.Element {
             onChange={handleFileInputChange}
           />
         </div>
-        {songFiles.length > 0 && (
+        {songs.length > 0 && (
           <div>
             <Button>upload</Button>
           </div>

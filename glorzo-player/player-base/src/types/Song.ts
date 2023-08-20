@@ -11,4 +11,5 @@ export type SongTags = {
 export type Song = {
   tags: SongTags;
   file: ArrayBuffer;
+  duration: number;
 };
