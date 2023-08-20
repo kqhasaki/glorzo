@@ -30,4 +30,8 @@ yarn desktop:serve
 yarn desktop:start
 ```
 
-![截屏2023-08-19 06.05.31.png](https://s2.loli.net/2023/08/19/Mr4Dy5XV6UHaExY.png)
+# App截图
+
+![截屏2023-08-20 16.19.39.png](https://s2.loli.net/2023/08/20/CXfyQmvq1ctNY4d.png)
+
+![截屏2023-08-20 16.20.55.png](https://s2.loli.net/2023/08/20/hgz3MNQ5KoCaXWF.png)
