@@ -5,6 +5,8 @@ import UploadItem, { UploadHeader } from "./UploadItem";
 import type { Song } from "@glorzo-player/types/Song";
 import { Button } from "@glorzo-player/components/Button";
 import { parseSongFromFile } from "@glorzo-player/utils";
+import { uploadFile, createSong } from "@glorzo-player/api/request";
+import mime from "mime-types";
 
 const useStyles = makeStyles()((theme) => ({
   mainWrapper: {
@@ -39,6 +41,21 @@ const useStyles = makeStyles()((theme) => ({
     gap: "24px",
   },
 }));
+
+async function uploadSong(song: Song): Promise<void> {
+  const audioUrl = await uploadFile(song.fileName, song.file);
+  const pictureUrl = await uploadFile(
+    `${song.tags.title}_${song.tags.artist}_cover.${
+      mime.extension(song.tags.picture.format) || "jpg"
+    }`,
+    song.tags.picture.data
+  );
+  await createSong({
+    song,
+    pictureUrl,
+    audioUrl,
+  });
+}
 
 export default function Upload(): JSX.Element {
   const { classes } = useStyles();
@@ -92,6 +109,15 @@ export default function Upload(): JSX.Element {
     }
   }, []);
 
+  const uploadSongs = useCallback(() => {
+    void Promise.all(
+      songs.map(async (song) => {
+        await uploadSong(song);
+        setSongs((prev) => prev.filter((item) => item === song));
+      })
+    );
+  }, [songs]);
+
   return (
     <main className={classes.mainWrapper}>
       <h1>Upload</h1>
@@ -121,7 +147,7 @@ export default function Upload(): JSX.Element {
         </div>
         {songs.length > 0 && (
           <div>
-            <Button>upload</Button>
+            <Button onClick={uploadSongs}>upload</Button>
           </div>
         )}
       </div>

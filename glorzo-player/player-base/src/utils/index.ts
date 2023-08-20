@@ -45,9 +45,10 @@ export async function parseSongFromFile(file: File): Promise<Song> {
     });
   });
   const fileBuffer = await file.arrayBuffer();
-  const duration = await getAudioDuration(fileBuffer);
+  const duration = await getAudioDuration(fileBuffer.slice(0));
   return {
     file: fileBuffer,
+    fileName: file.name,
     tags: tags as SongTags,
     duration,
   };

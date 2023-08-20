@@ -36,10 +36,11 @@ export async function initateTables() {
   const createMusicTable = `
   CREATE TABLE IF NOT EXISTS song (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    cover VARCHAR(255) NOT NULL,
-    artist VARCHAR(255) NOT NULL,
-    mp3 VARCHAR(255) NOT NULL,
+    name VARCHAR(1024) NOT NULL,
+    pictureUrl TEXT NOT NULL,
+    artist VARCHAR(1024) NOT NULL,
+    album VARCHAR(1024) NOT NULL,
+    audioUrl TEXT NOT NULL,
     uploader INT
   );
   `;
@@ -62,8 +63,9 @@ export type Song = {
   id: SongId;
   name: string;
   artist: string;
-  cover: string;
-  mp3: string;
+  album: string;
+  pictureUrl: string;
+  audioUrl: string;
   uploader: User;
 };
 
@@ -95,12 +97,9 @@ export async function getAllSongs(): Promise<Song[]> {
 }
 
 export async function createNewSong(createSongOptions: Omit<Song, "id">): Promise<void> {
-  const { mp3, cover, artist, uploader, name } = createSongOptions;
-  await pool.query("INSERT INTO song (name, artist, cover, uploader, mp3) VALUES (?, ?, ?, ?, ?)", [
-    name,
-    artist,
-    cover,
-    uploader,
-    mp3,
-  ]);
+  const { audioUrl, pictureUrl, artist, album, uploader, name } = createSongOptions;
+  await pool.query(
+    "INSERT INTO song (name, artist, album, pictureUrl, uploader, audioUrl) VALUES (?, ?, ?, ?, ?, ?)",
+    [name, artist, album, pictureUrl, uploader, audioUrl]
+  );
 }

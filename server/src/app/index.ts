@@ -90,16 +90,23 @@ app.get("/download", async (req, res) => {
     res.status(400).json(errRes);
     return;
   }
-  const { content, res: result } = await downloadFile(target);
-  res.setHeader("Content-Type", (result.headers as any)["content-type"]!);
-  res.status(200).write(content);
-  res.end();
+  try {
+    const { content, res: result } = await downloadFile(target);
+    res.setHeader("Content-Type", (result.headers as any)["content-type"]!);
+    res.status(200).write(content);
+    res.end();
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: `${err}`,
+    });
+  }
 });
 
 app.post("/createSong", async (req, res) => {
-  const { name, artist, cover, uploader, mp3 } = req.body;
+  const { name, artist, pictureUrl, uploader, audioUrl, album } = req.body;
   try {
-    await createNewSong({ name, artist, cover, uploader, mp3 });
+    await createNewSong({ name, artist, pictureUrl, uploader, audioUrl, album });
     const successRes: JSONResponseSuccessType = {
       success: true,
       data: "New song added",

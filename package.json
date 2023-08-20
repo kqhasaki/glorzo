@@ -17,6 +17,7 @@
   ],
   "devDependencies": {
     "@types/jest": "^29.5.3",
+    "@types/mime-types": "^2.1.1",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "browserify-zlib": "^0.2.0",
@@ -49,5 +50,8 @@
     "web:build:prod": "webpack --mode production --progress --config glorzo-player/player-web/webpack.config.ts",
     "web:serve": "webpack serve --mode development --progress --config glorzo-player/player-web/webpack.config.ts",
     "lint": "eslint ."
+  },
+  "dependencies": {
+    "mime-types": "^2.1.35"
   }
 }

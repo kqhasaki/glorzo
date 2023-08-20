@@ -27,7 +27,7 @@ export function SongCard({ song }: { song: Song }): JSX.Element {
 
   return (
     <article className={classes.wrapper}>
-      <img draggable={false} className={classes.image} src={getDownloadUrl(song.cover)}></img>
+      <img draggable={false} className={classes.image} src={getDownloadUrl(song.pictureUrl)}></img>
       <div>
         <p className={classes.title}>{song.name}</p>
         <p className={classes.artist}>{song.artist}</p>
