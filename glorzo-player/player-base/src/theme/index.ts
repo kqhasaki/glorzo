@@ -58,8 +58,8 @@ const darkTheme: Theme = {
   palette: {
     background: {
       paper: "rgb(44, 33, 31)",
-      primary: "rgba(32, 32, 32)",
-      secondary: "rgba(30, 30, 30)",
+      primary: "rgba(39, 29, 28)",
+      secondary: "rgba(39, 29, 28)",
       highlight: "rgba(194, 56, 48)",
       transparent: "rgba(44, 33, 31, 0.5)",
     },

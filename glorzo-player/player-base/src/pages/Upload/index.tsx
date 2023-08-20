@@ -1,7 +1,8 @@
 import { makeStyles } from "@glorzo-player/theme";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useRef, useState } from "react";
-import UploadItem from "./UploadItem";
+import UploadItem, { UploadHeader } from "./UploadItem";
+import { Button } from "@glorzo-player/components/Button";
 
 const useStyles = makeStyles()((theme) => ({
   mainWrapper: {
@@ -13,7 +14,6 @@ const useStyles = makeStyles()((theme) => ({
     borderRadius: "10px",
     color: theme.palette.text.secondary,
     border: `0.5px dashed ${theme.palette.text.secondary}`,
-    marginTop: "30px",
     cursor: "pointer",
     display: "flex",
     justifyContent: "center",
@@ -29,6 +29,12 @@ const useStyles = makeStyles()((theme) => ({
   },
   uploadForm: {
     marginTop: "30px",
+  },
+  uploaderContainer: {
+    marginTop: "30px",
+    display: "flex",
+    alignItems: "center",
+    gap: "24px",
   },
 }));
 
@@ -86,26 +92,34 @@ export default function Upload(): JSX.Element {
     <main className={classes.mainWrapper}>
       <h1>Upload</h1>
       <div className={classes.uploadForm}>
+        {songFiles.length > 0 && <UploadHeader />}
         {songFiles.map((songFile, idx) => (
           <UploadItem file={songFile} key={idx} />
         ))}
       </div>
-      <div
-        ref={uploader}
-        className={classes.uploader}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleClick}
-      >
-        <AddIcon fontSize="large" />
-        <input
-          style={{ display: "none" }}
-          type="file"
-          ref={fileInput}
-          accept=".mp3"
-          onChange={handleFileInputChange}
-        />
+      <div className={classes.uploaderContainer}>
+        <div
+          ref={uploader}
+          className={classes.uploader}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleClick}
+        >
+          <AddIcon fontSize="large" />
+          <input
+            style={{ display: "none" }}
+            type="file"
+            ref={fileInput}
+            accept=".mp3"
+            onChange={handleFileInputChange}
+          />
+        </div>
+        {songFiles.length > 0 && (
+          <div>
+            <Button>upload</Button>
+          </div>
+        )}
       </div>
     </main>
   );

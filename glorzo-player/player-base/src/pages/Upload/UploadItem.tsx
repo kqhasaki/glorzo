@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { makeStyles } from "@glorzo-player/theme";
 import { arrayBufferToBase64Str, getAudioDuration } from "@glorzo-player/utils";
 import type { SongTags } from "@glorzo-player/types/Song";
+import { clsx } from "clsx";
 
 type UploadItemPropsType = {
   file: File;
@@ -14,7 +15,7 @@ const useStyles = makeStyles()((theme) => ({
     height: "60px",
     padding: "6px",
     background: theme.palette.background.secondary,
-    "&:nth-of-type(even)": {
+    "&:nth-of-type(odd)": {
       background: theme.palette.background.paper,
     },
     fontSize: "13px",
@@ -31,6 +32,8 @@ const useStyles = makeStyles()((theme) => ({
   image: {
     height: "100%",
     aspectRatio: "1 / 1",
+    borderRadius: "4px",
+    border: `0.5px solid ${theme.palette.divider.primary}`,
   },
   basic: {
     height: "100%",
@@ -51,7 +54,24 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.text.secondary,
     width: "10%",
   },
+  header: {
+    color: theme.palette.text.secondary,
+    fontWeight: "bold",
+  },
 }));
+
+export function UploadHeader(): JSX.Element {
+  const { classes } = useStyles();
+
+  return (
+    <div className={classes.wrapper}>
+      <div className={clsx([classes.basic, classes.header])}>Song</div>
+      <div className={clsx([classes.artist, classes.header])}>artist</div>
+      <div className={clsx([classes.album, classes.header])}>album</div>
+      <div className={clsx([classes.duration, classes.header])}>duration</div>
+    </div>
+  );
+}
 
 export default function UploadItem({ file }: UploadItemPropsType): JSX.Element {
   const [tags, setTags] = useState<SongTags>();
