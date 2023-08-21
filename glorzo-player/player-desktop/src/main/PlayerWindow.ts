@@ -34,7 +34,7 @@ function newPlayerWindow(): BrowserWindow {
   const windowOptions: BrowserWindowConstructorOptions = {
     height: 800,
     width: 1200,
-    minWidth: 800,
+    minWidth: 980,
     minHeight: 600,
     autoHideMenuBar: true,
     title: GLORZO_PRODUCT_NAME,

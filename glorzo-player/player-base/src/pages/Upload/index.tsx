@@ -61,7 +61,7 @@ export default function Upload(): JSX.Element {
   const { classes } = useStyles();
   const uploader = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [songs, setSongs] = useState<Array<Song>>([]);
 
   const handleDragOver = useCallback(
     (e: React.DragEvent<HTMLElement>) => {
@@ -89,10 +89,13 @@ export default function Upload(): JSX.Element {
 
       if (file != undefined && file.type.startsWith("audio")) {
         const song = await parseSongFromFile(file);
+        if (songs.find((item) => item.sha256 === song.sha256)) {
+          return;
+        }
         setSongs((prev) => [...prev, song]);
       }
     },
-    [classes.dragOver]
+    [classes.dragOver, songs]
   );
 
   const handleClick = useCallback(() => {
@@ -101,19 +104,25 @@ export default function Upload(): JSX.Element {
     }
   }, []);
 
-  const handleFileInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file != undefined) {
-      const song = await parseSongFromFile(file);
-      setSongs((prev) => [...prev, song]);
-    }
-  }, []);
+  const handleFileInputChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file != undefined) {
+        const song = await parseSongFromFile(file);
+        if (songs.find((item) => item.sha256 === song.sha256)) {
+          return;
+        }
+        setSongs((prev) => [...prev, song]);
+      }
+    },
+    [songs]
+  );
 
   const uploadSongs = useCallback(() => {
     void Promise.all(
       songs.map(async (song) => {
         await uploadSong(song);
-        setSongs((prev) => prev.filter((item) => item === song));
+        setSongs((prev) => prev.filter((item) => item.sha256 !== song.sha256));
       })
     );
   }, [songs]);

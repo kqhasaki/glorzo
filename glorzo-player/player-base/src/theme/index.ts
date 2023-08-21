@@ -61,7 +61,7 @@ const darkTheme: Theme = {
       primary: "rgba(39, 29, 28)",
       secondary: "rgba(39, 29, 28)",
       highlight: "rgba(194, 56, 48)",
-      transparent: "rgba(44, 33, 31, 0.5)",
+      transparent: "rgba(44, 33, 31, 0.8)",
     },
     text: {
       primary: "rgba(255, 255, 255)",

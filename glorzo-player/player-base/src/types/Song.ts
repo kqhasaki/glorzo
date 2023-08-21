@@ -13,4 +13,5 @@ export type Song = {
   file: ArrayBuffer;
   fileName: string;
   duration: number;
+  sha256: string;
 };

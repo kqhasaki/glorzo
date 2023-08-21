@@ -1,5 +1,6 @@
 import type { Song, SongTags } from "@glorzo-player/types/Song";
 import jsmediatags from "jsmediatags";
+import { SHA256, lib } from "crypto-js";
 
 export function arrayBufferToBase64Str(buff: ArrayBuffer): string {
   const uint8Array = new Uint8Array(buff);
@@ -26,6 +27,15 @@ export function getFormattedDuration(durationInSeconds: number): string {
   return `${min}:${sec.toString().padStart(2, "0")}`;
 }
 
+function arrayBufferToWordArray(ab: ArrayBuffer) {
+  const i8a = new Uint8Array(ab);
+  const arr = [];
+  for (let i = 0; i < i8a.length; i += 4) {
+    arr.push((i8a[i]! << 24) | (i8a[i + 1]! << 16) | (i8a[i + 2]! << 8) | i8a[i + 3]!);
+  }
+  return lib.WordArray.create(arr, i8a.length);
+}
+
 export async function parseSongFromFile(file: File): Promise<Song> {
   const tags = await new Promise((resolve) => {
     jsmediatags.read(file, {
@@ -46,10 +56,15 @@ export async function parseSongFromFile(file: File): Promise<Song> {
   });
   const fileBuffer = await file.arrayBuffer();
   const duration = await getAudioDuration(fileBuffer.slice(0));
+  const sha256 = await new Promise<string>((resolve) => {
+    const md5Hash = SHA256(arrayBufferToWordArray(fileBuffer));
+    resolve(md5Hash.toString());
+  });
   return {
     file: fileBuffer,
     fileName: file.name,
     tags: tags as SongTags,
     duration,
+    sha256,
   };
 }
