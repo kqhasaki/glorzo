@@ -7,6 +7,10 @@ const store = configureStore({
     localSongs: localSongsReducer,
     remoteSongs: remoteSongsReducer,
   },
+  middleware: (getDefaultMiddleWare) =>
+    getDefaultMiddleWare({
+      serializableCheck: false,
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
