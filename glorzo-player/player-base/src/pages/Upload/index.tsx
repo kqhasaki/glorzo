@@ -1,11 +1,13 @@
 import { makeStyles } from "@glorzo-player/theme";
 import AddIcon from "@mui/icons-material/Add";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import UploadItem, { UploadHeader } from "./UploadItem";
-import type { Song } from "@glorzo-player/types/Song";
+import type { LocalSong as Song } from "@glorzo-player/types/LocalSong";
 import { Button } from "@glorzo-player/components/Button";
 import { parseSongFromFile } from "@glorzo-player/utils";
 import { uploadFile, createSong } from "@glorzo-player/api/request";
+import { useAppSelector, useAppDispatch } from "@glorzo-player/hooks";
+import { add, remove } from "@glorzo-player/store/localSongsSlice";
 import mime from "mime-types";
 
 const useStyles = makeStyles()((theme) => ({
@@ -61,7 +63,8 @@ export default function Upload(): JSX.Element {
   const { classes } = useStyles();
   const uploader = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const [songs, setSongs] = useState<Array<Song>>([]);
+  const songs = useAppSelector((state) => state.localSongs.value);
+  const dispatch = useAppDispatch();
 
   const handleDragOver = useCallback(
     (e: React.DragEvent<HTMLElement>) => {
@@ -92,10 +95,10 @@ export default function Upload(): JSX.Element {
         if (songs.find((item) => item.sha256 === song.sha256)) {
           return;
         }
-        setSongs((prev) => [...prev, song]);
+        dispatch(add(song));
       }
     },
-    [classes.dragOver, songs]
+    [classes.dragOver, songs, dispatch]
   );
 
   const handleClick = useCallback(() => {
@@ -112,20 +115,20 @@ export default function Upload(): JSX.Element {
         if (songs.find((item) => item.sha256 === song.sha256)) {
           return;
         }
-        setSongs((prev) => [...prev, song]);
+        dispatch(add(song));
       }
     },
-    [songs]
+    [songs, dispatch]
   );
 
   const uploadSongs = useCallback(() => {
     void Promise.all(
       songs.map(async (song) => {
         await uploadSong(song);
-        setSongs((prev) => prev.filter((item) => item.sha256 !== song.sha256));
+        dispatch(remove(song.sha256));
       })
     );
-  }, [songs]);
+  }, [songs, dispatch]);
 
   return (
     <main className={classes.mainWrapper}>

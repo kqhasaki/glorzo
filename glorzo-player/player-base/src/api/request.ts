@@ -1,6 +1,6 @@
 import type { JSONResponseSuccessType } from "@glorzo-server/app/types";
 import type { Song } from "@glorzo-server/db";
-import type { Song as LocalSong } from "@glorzo-player/types/Song";
+import type { LocalSong } from "@glorzo-player/types/LocalSong";
 
 export const API_BASE_URL = "http://localhost:3000";
 

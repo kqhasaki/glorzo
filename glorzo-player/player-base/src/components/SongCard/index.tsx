@@ -1,4 +1,4 @@
-import type { Song } from "@glorzo-server/db";
+import type { RemoteSong as Song } from "@glorzo-player/types/LocalSong";
 import { getDownloadUrl } from "@glorzo-player/api/request";
 import { makeStyles } from "@glorzo-player/theme";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";

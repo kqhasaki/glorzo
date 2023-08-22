@@ -1,4 +1,4 @@
-import type { Song, SongTags } from "@glorzo-player/types/Song";
+import type { LocalSong, SongTags } from "@glorzo-player/types/LocalSong";
 import jsmediatags from "jsmediatags";
 import { SHA256, lib } from "crypto-js";
 
@@ -36,7 +36,7 @@ function arrayBufferToWordArray(ab: ArrayBuffer) {
   return lib.WordArray.create(arr, i8a.length);
 }
 
-export async function parseSongFromFile(file: File): Promise<Song> {
+export async function parseSongFromFile(file: File): Promise<LocalSong> {
   const tags = await new Promise((resolve) => {
     jsmediatags.read(file, {
       onSuccess(parsedTags) {

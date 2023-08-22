@@ -1,3 +1,5 @@
+import type { Song } from "@glorzo-server/db";
+
 export type SongTags = {
   title: string;
   picture: {
@@ -8,10 +10,12 @@ export type SongTags = {
   album: string;
 };
 
-export type Song = {
+export type LocalSong = {
   tags: SongTags;
   file: ArrayBuffer;
   fileName: string;
   duration: number;
   sha256: string;
 };
+
+export type RemoteSong = Song;
