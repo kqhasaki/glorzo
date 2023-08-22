@@ -27,13 +27,16 @@ export function getFormattedDuration(durationInSeconds: number): string {
   return `${min}:${sec.toString().padStart(2, "0")}`;
 }
 
-function arrayBufferToWordArray(ab: ArrayBuffer) {
+function getArrayBufferSha256(ab: ArrayBuffer): string {
   const i8a = new Uint8Array(ab);
   const arr = [];
   for (let i = 0; i < i8a.length; i += 4) {
     arr.push((i8a[i]! << 24) | (i8a[i + 1]! << 16) | (i8a[i + 2]! << 8) | i8a[i + 3]!);
   }
-  return lib.WordArray.create(arr, i8a.length);
+  const wordArray = lib.WordArray.create(arr, i8a.length);
+  const sha256Hash = SHA256(wordArray);
+
+  return sha256Hash.toString();
 }
 
 export async function parseSongFromFile(file: File): Promise<LocalSong> {
@@ -56,10 +59,8 @@ export async function parseSongFromFile(file: File): Promise<LocalSong> {
   });
   const fileBuffer = await file.arrayBuffer();
   const duration = await getAudioDuration(fileBuffer.slice(0));
-  const sha256 = await new Promise<string>((resolve) => {
-    const md5Hash = SHA256(arrayBufferToWordArray(fileBuffer));
-    resolve(md5Hash.toString());
-  });
+  const sha256 = getArrayBufferSha256(fileBuffer);
+
   return {
     file: fileBuffer,
     fileName: file.name,

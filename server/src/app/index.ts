@@ -1,55 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express from "express";
-import {
-  initateTables,
-  getAllUsers,
-  createNewUser,
-  getAllSongs,
-  createNewSong,
-  Song,
-} from "@glorzo-server/db";
 import { uploadFile, downloadFile } from "@glorzo-server/oss";
 import { JSONResponseSuccessType, ResponseErrorType } from "./types";
+import { Song } from "@glorzo-server/db/song";
 
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT ?? 3000;
 
-void initateTables();
-
-app.post("/signup", async (req, res) => {
-  const { name, password } = req.body;
-  try {
-    await createNewUser({
-      name,
-      password,
-    });
-    const successRes: JSONResponseSuccessType = {
-      success: true,
-      data: "New user created",
-    };
-    res.status(200).json(successRes);
-  } catch (err) {
-    const errorRes: ResponseErrorType = {
-      success: false,
-      message: `${err}`,
-    };
-    res.status(500).json(errorRes);
-  }
-});
-
-app.get("/users", async (_, res) => {
-  const users = await getAllUsers();
-  res.status(200).json(users);
-});
-
+/**
+ * 获取所有的歌曲信息
+ */
 app.get("/songs", async (_, res) => {
   try {
-    const songs = await getAllSongs();
+    const songs = await Song.findAll();
     const successRes: JSONResponseSuccessType<Song[]> = {
       success: true,
-      data: songs,
+      data: songs.map((song) => song.toJSON()),
     };
     res.status(200).json(successRes);
   } catch (err) {
@@ -61,6 +29,9 @@ app.get("/songs", async (_, res) => {
   }
 });
 
+/**
+ * 提供OSS文件上传接口
+ */
 app.post("/uploadFile", (req, res) => {
   if (req.headers["content-type"] !== "application/octet-stream") {
     res.status(400).json({ error: "Invalid content type" });
@@ -80,6 +51,9 @@ app.post("/uploadFile", (req, res) => {
   });
 });
 
+/**
+ * 提供OSS文件下载接口
+ */
 app.get("/download", async (req, res) => {
   const target = req.query.target;
   if (typeof target !== "string") {
@@ -103,13 +77,23 @@ app.get("/download", async (req, res) => {
   }
 });
 
+/**
+ * 新建歌曲条目
+ */
 app.post("/createSong", async (req, res) => {
   const { name, artist, pictureUrl, uploader, audioUrl, album } = req.body;
   try {
-    await createNewSong({ name, artist, pictureUrl, uploader, audioUrl, album });
+    const newSong = await Song.create({
+      album,
+      name,
+      artist,
+      pictureUrl,
+      audioUrl,
+      uploader,
+    });
     const successRes: JSONResponseSuccessType = {
       success: true,
-      data: "New song added",
+      data: newSong.toJSON(),
     };
     res.status(200).json(successRes);
   } catch (err) {

@@ -1,13 +1,13 @@
 import type { JSONResponseSuccessType } from "@glorzo-server/app/types";
-import type { Song } from "@glorzo-server/db";
 import type { LocalSong } from "@glorzo-player/types/LocalSong";
+import type { RemoteSong } from "@glorzo-player/types/LocalSong";
 
 export const API_BASE_URL = "http://localhost:3000";
 
-export async function getAllSongs(): Promise<Song[]> {
+export async function getAllSongs(): Promise<RemoteSong[]> {
   const res = (await fetch(`${API_BASE_URL}/songs`).then(
     async (res) => await res.json()
-  )) as JSONResponseSuccessType<Song[]>;
+  )) as JSONResponseSuccessType<RemoteSong[]>;
 
   const songs = res.data;
 
