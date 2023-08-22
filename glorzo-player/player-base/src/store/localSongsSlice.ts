@@ -11,8 +11,12 @@ export const localSongsSlice = createSlice({
   name: "localSongs",
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<LocalSong>) => {
-      state.value.push(action.payload);
+    add: (state, action: PayloadAction<LocalSong[] | LocalSong>) => {
+      if (Array.isArray(action.payload)) {
+        state.value.push(...action.payload);
+      } else {
+        state.value.push(action.payload);
+      }
     },
     remove: (state, action: PayloadAction<LocalSong["sha256"]>) => {
       const index = state.value.findIndex((item) => item.sha256 === action.payload);

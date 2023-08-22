@@ -82,23 +82,30 @@ export default function Upload(): JSX.Element {
     }
   }, [classes]);
 
+  const addLocalSong = useCallback(
+    async (file: File) => {
+      if (!file.type.startsWith("audio")) {
+        return;
+      }
+      const newSong = await parseSongFromFile(file);
+      if (songs.find((item) => item.sha256 === newSong.sha256)) {
+        return;
+      }
+      dispatch(add(newSong));
+    },
+    [dispatch, songs]
+  );
+
   const handleDrop = useCallback(
     async (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
-      const file = e.dataTransfer.files[0];
+      const files = Array.from(e.dataTransfer.files);
       if (uploader.current) {
         uploader.current.classList.remove(classes.dragOver);
       }
-
-      if (file != undefined && file.type.startsWith("audio")) {
-        const song = await parseSongFromFile(file);
-        if (songs.find((item) => item.sha256 === song.sha256)) {
-          return;
-        }
-        dispatch(add(song));
-      }
+      files.forEach((file) => void addLocalSong(file));
     },
-    [classes.dragOver, songs, dispatch]
+    [classes.dragOver, addLocalSong]
   );
 
   const handleClick = useCallback(() => {
@@ -109,25 +116,20 @@ export default function Upload(): JSX.Element {
 
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file != undefined) {
-        const song = await parseSongFromFile(file);
-        if (songs.find((item) => item.sha256 === song.sha256)) {
-          return;
-        }
-        dispatch(add(song));
+      if (e.target.files == undefined) {
+        return;
       }
+      const files = Array.from(e.target.files);
+      files.forEach((file) => void addLocalSong(file));
     },
-    [songs, dispatch]
+    [addLocalSong]
   );
 
   const uploadSongs = useCallback(() => {
-    void Promise.all(
-      songs.map(async (song) => {
-        await uploadSong(song);
-        dispatch(remove(song.sha256));
-      })
-    );
+    songs.forEach(async (song) => {
+      await uploadSong(song);
+      dispatch(remove(song.sha256));
+    });
   }, [songs, dispatch]);
 
   return (
@@ -150,6 +152,7 @@ export default function Upload(): JSX.Element {
         >
           <AddIcon fontSize="large" />
           <input
+            multiple
             style={{ display: "none" }}
             type="file"
             ref={fileInput}
