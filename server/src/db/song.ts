@@ -34,6 +34,10 @@ Song.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    sha256: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     sequelize,

@@ -5,7 +5,7 @@ import UploadItem, { UploadHeader } from "./UploadItem";
 import type { LocalSong as Song } from "@glorzo-player/types/LocalSong";
 import { Button } from "@glorzo-player/components/Button";
 import { parseSongFromFile } from "@glorzo-player/utils";
-import { uploadFile, createSong } from "@glorzo-player/api/request";
+import { uploadFile, createSong, songExists } from "@glorzo-player/api/request";
 import { useAppSelector, useAppDispatch } from "@glorzo-player/hooks";
 import { add, remove } from "@glorzo-player/store/localSongsSlice";
 import mime from "mime-types";
@@ -44,7 +44,12 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-async function uploadSong(song: Song): Promise<void> {
+async function uploadSong(song: Song): Promise<boolean> {
+  const exist = await songExists(song.sha256);
+  if (exist) {
+    console.warn(`Song ${song.tags.title} already exists.`);
+    return false;
+  }
   const audioUrl = await uploadFile(song.fileName, song.file);
   const pictureUrl = await uploadFile(
     `${song.tags.title}_${song.tags.artist}_cover.${
@@ -57,6 +62,7 @@ async function uploadSong(song: Song): Promise<void> {
     pictureUrl,
     audioUrl,
   });
+  return true;
 }
 
 export default function Upload(): JSX.Element {
@@ -125,11 +131,13 @@ export default function Upload(): JSX.Element {
     [addLocalSong]
   );
 
-  const uploadSongs = useCallback(() => {
-    songs.forEach(async (song) => {
-      await uploadSong(song);
-      dispatch(remove(song.sha256));
-    });
+  const uploadSongs = useCallback(async () => {
+    for (const song of songs) {
+      const result = await uploadSong(song);
+      if (result) {
+        dispatch(remove(song.sha256));
+      }
+    }
   }, [songs, dispatch]);
 
   return (

@@ -50,9 +50,25 @@ export async function createSong({
       pictureUrl,
       audioUrl,
       uploader: 1,
+      sha256: song.sha256,
     }),
     headers: {
       "Content-Type": "application/json",
     },
   }).then(async (res) => await res.json());
+}
+
+export async function songExists(sha256: string): Promise<boolean> {
+  const result = (await fetch(`${API_BASE_URL}/songExists`, {
+    method: "POST",
+    body: JSON.stringify({
+      sha256,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (res) => await res.json())) as JSONResponseSuccessType<boolean>;
+
+  const exist = result.data;
+  return exist;
 }

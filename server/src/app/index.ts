@@ -78,10 +78,35 @@ app.get("/download", async (req, res) => {
 });
 
 /**
+ * 检查音频文件是否已经存在
+ */
+app.post("/songExists", async (req, res) => {
+  const { sha256 } = req.body;
+  try {
+    const exists = await Song.findOne({
+      where: {
+        sha256,
+      },
+    });
+    const successRes: JSONResponseSuccessType = {
+      success: true,
+      data: exists != undefined,
+    };
+    res.status(200).json(successRes);
+  } catch (err) {
+    const errorRes: ResponseErrorType = {
+      success: false,
+      message: `${err}`,
+    };
+    res.status(500).json(errorRes);
+  }
+});
+
+/**
  * 新建歌曲条目
  */
 app.post("/createSong", async (req, res) => {
-  const { name, artist, pictureUrl, uploader, audioUrl, album } = req.body;
+  const { name, artist, pictureUrl, uploader, audioUrl, album, sha256 } = req.body;
   try {
     const newSong = await Song.create({
       album,
@@ -90,6 +115,7 @@ app.post("/createSong", async (req, res) => {
       pictureUrl,
       audioUrl,
       uploader,
+      sha256,
     });
     const successRes: JSONResponseSuccessType = {
       success: true,
