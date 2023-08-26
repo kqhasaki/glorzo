@@ -1,8 +1,11 @@
-import type { RemoteSong as Song } from "@glorzo-player/types/LocalSong";
+import type { RemoteSong as Song } from "@glorzo-player/types/Songs";
 import { getDownloadUrl } from "@glorzo-player/api/request";
 import { makeStyles } from "@glorzo-player/theme";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { useAppDispatch } from "@glorzo-player/hooks";
+import { useCallback } from "react";
+import { loadSong } from "@glorzo-player/store/playerStateSlice";
 
 const useStyles = makeStyles<void, "image" | "operations">()((theme, _, classes) => ({
   wrapper: {
@@ -62,6 +65,21 @@ const useStyles = makeStyles<void, "image" | "operations">()((theme, _, classes)
 
 export function SongCard({ song }: { song: Song }): JSX.Element {
   const { classes } = useStyles();
+  const dispatch = useAppDispatch();
+
+  const selectSong = useCallback(() => {
+    dispatch(
+      loadSong({
+        name: song.name,
+        album: song.album,
+        artist: song.artist,
+        picture: song.pictureUrl,
+        audioFile: song.audioUrl,
+        timeCursor: 0,
+        id: song.id,
+      })
+    );
+  }, [dispatch, song]);
 
   return (
     <article className={classes.wrapper}>
@@ -72,7 +90,7 @@ export function SongCard({ song }: { song: Song }): JSX.Element {
           src={getDownloadUrl(song.pictureUrl)}
         ></img>
         <div className={classes.operations}>
-          <div className={classes.operationBtn}>
+          <div className={classes.operationBtn} onClick={selectSong}>
             <PlayArrowIcon fontSize="small" />
           </div>
           <div className={classes.operationBtn}>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { RemoteSong } from "@glorzo-player/types/LocalSong";
+import type { RemoteSong } from "@glorzo-player/types/Songs";
 import { getAllSongs } from "@glorzo-player/api/request";
 
 export type RemoteSongsState = {

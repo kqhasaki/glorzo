@@ -1,4 +1,4 @@
-import type { LocalSong, SongTags } from "@glorzo-player/types/LocalSong";
+import type { LocalSong, SongTags } from "@glorzo-player/types/Songs";
 import jsmediatags from "jsmediatags";
 import { SHA256, lib } from "crypto-js";
 

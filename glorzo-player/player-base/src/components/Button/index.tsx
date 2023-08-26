@@ -6,6 +6,7 @@ export type ButtonPropsType = {
   color?: "primary" | "secondary" | "highlight";
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  disabled?: boolean;
 };
 
 const useStyles = makeStyles()(() => ({
@@ -16,8 +17,13 @@ const useStyles = makeStyles()(() => ({
     background: "none",
     cursor: "pointer",
     borderRadius: "4px",
-    "&:active": {
+    WebkitAppRegion: "no-drag",
+    "&:enabled:active": {
       opacity: 0.9,
+    },
+    "&:disabled": {
+      cursor: "not-allowed",
+      filter: "brightness(60%)",
     },
   },
 }));
@@ -26,6 +32,7 @@ export function Button({
   children,
   variant = "contained",
   color = "highlight",
+  disabled = false,
   onClick,
 }: ButtonPropsType): JSX.Element {
   const { classes } = useStyles();
@@ -49,7 +56,9 @@ export function Button({
       case "outlined":
         return {};
       case "link":
-        return {};
+        return {
+          color: textColor,
+        };
       default:
         return {
           background: bgColor,
@@ -59,7 +68,19 @@ export function Button({
   }, [variant, color, theme]);
 
   return (
-    <button style={styles} className={classes.wrapper} onClick={onClick}>
+    <button
+      style={styles}
+      className={classes.wrapper}
+      onClick={
+        disabled
+          ? (e) => {
+              e.preventDefault();
+              return false;
+            }
+          : onClick
+      }
+      disabled={disabled}
+    >
       {children}
     </button>
   );

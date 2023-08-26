@@ -2,7 +2,7 @@ import { makeStyles } from "@glorzo-player/theme";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useRef } from "react";
 import UploadItem, { UploadHeader } from "./UploadItem";
-import type { LocalSong as Song } from "@glorzo-player/types/LocalSong";
+import type { LocalSong as Song } from "@glorzo-player/types/Songs";
 import { Button } from "@glorzo-player/components/Button";
 import { parseSongFromFile } from "@glorzo-player/utils";
 import { uploadFile, createSong, songExists } from "@glorzo-player/api/request";

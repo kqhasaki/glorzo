@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { LocalSong } from "@glorzo-player/types/LocalSong";
+import type { LocalSong } from "@glorzo-player/types/Songs";
 
 export type LocalSongsState = {
   value: Array<LocalSong>;

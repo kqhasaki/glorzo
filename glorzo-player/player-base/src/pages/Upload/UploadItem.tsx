@@ -1,6 +1,6 @@
 import { makeStyles } from "@glorzo-player/theme";
 import { arrayBufferToBase64Str, getFormattedDuration } from "@glorzo-player/utils";
-import type { LocalSong as Song } from "@glorzo-player/types/LocalSong";
+import type { LocalSong as Song } from "@glorzo-player/types/Songs";
 import { clsx } from "clsx";
 
 type UploadItemPropsType = {

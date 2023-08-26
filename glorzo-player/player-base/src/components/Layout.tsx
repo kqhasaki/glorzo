@@ -2,6 +2,7 @@ import { makeStyles } from "@glorzo-player/theme";
 import { Navigator } from "@glorzo-player/components/Navigator";
 import { ReactNode, useRef } from "react";
 import { useCallback } from "react";
+import { MiniPlayer } from "./MiniPlayer";
 import { clsx } from "clsx";
 
 const useStyles = makeStyles()((theme) => ({
@@ -9,7 +10,7 @@ const useStyles = makeStyles()((theme) => ({
     height: "100vh",
     width: "100%",
     minHeight: "400px",
-    minWidth: "600px",
+    minWidth: "980px",
     userSelect: "none",
   },
   navbar: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles()((theme) => ({
     background: theme.palette.background.paper,
     position: "fixed",
     height: "100%",
+    width: "100% - 216px",
     left: "216px",
     right: 0,
   },
@@ -55,7 +57,7 @@ const useStyles = makeStyles()((theme) => ({
   header: {
     zIndex: 99,
     height: "58px",
-    position: "fixed",
+    position: "absolute",
     top: 0,
     width: "100%",
     background: theme.palette.background.transparent,
@@ -66,7 +68,7 @@ const useStyles = makeStyles()((theme) => ({
   navbarHeader: {
     zIndex: 99,
     height: "58px",
-    position: "fixed",
+    position: "absolute",
     top: 0,
     width: "100%",
     WebkitAppRegion: "drag",
@@ -100,7 +102,9 @@ export default function Layout({ content }: { content: ReactNode }): JSX.Element
         <Navigator />
       </div>
       <div className={classes.main}>
-        <div className={classes.header}></div>
+        <div className={classes.header}>
+          <MiniPlayer />
+        </div>
         <div
           ref={mainWrapper}
           onScroll={handleScroll}
