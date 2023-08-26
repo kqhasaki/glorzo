@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RemoteSong } from "@glorzo-player/types/LocalSong";
+import { getAllSongs } from "@glorzo-player/api/request";
 
 export type RemoteSongsState = {
   value: Array<RemoteSong>;
@@ -9,16 +10,19 @@ const initialState: RemoteSongsState = {
   value: [],
 };
 
+export const fetchRemoteSongs = createAsyncThunk("remoteSongs/fetch", async () => {
+  return await getAllSongs();
+});
+
 export const remoteSongsSlice = createSlice({
   name: "remoteSongs",
   initialState,
-  reducers: {
-    update: (_, action: PayloadAction<RemoteSong[]>) => {
-      return { value: action.payload };
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchRemoteSongs.fulfilled, (state, action) => {
+      state.value = action.payload;
+    });
   },
 });
-
-export const { update } = remoteSongsSlice.actions;
 
 export default remoteSongsSlice.reducer;

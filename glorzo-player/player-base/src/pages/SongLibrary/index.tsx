@@ -1,9 +1,8 @@
 import { makeStyles } from "@glorzo-player/theme";
 import { SongCard } from "@glorzo-player/components/SongCard";
-import { update } from "@glorzo-player/store/remoteSongsSlice";
-import { getAllSongs } from "@glorzo-player/api/request";
+import { fetchRemoteSongs } from "@glorzo-player/store/remoteSongsSlice";
 import { useAppDispatch, useAppSelector } from "@glorzo-player/hooks";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 const useStyles = makeStyles()(() => ({
   mainWrapper: {
@@ -22,14 +21,9 @@ export default function SongLibrary(): JSX.Element {
   const allSongs = useAppSelector((state) => state.remoteSongs.value);
   const dispatch = useAppDispatch();
 
-  const updateLibrary = useCallback(async () => {
-    const songs = await getAllSongs();
-    dispatch(update(songs));
-  }, [dispatch]);
-
   useEffect(() => {
-    void updateLibrary();
-  }, [updateLibrary]);
+    dispatch(fetchRemoteSongs());
+  }, [dispatch]);
 
   return (
     <main className={classes.mainWrapper}>
