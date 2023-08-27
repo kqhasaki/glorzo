@@ -7,11 +7,13 @@ export type ButtonPropsType = {
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   disabled?: boolean;
+  size?: "small" | "middle" | "large";
 };
 
 const useStyles = makeStyles()(() => ({
   wrapper: {
-    display: "inline-block",
+    display: "inline-flex",
+    alignItems: "center",
     border: "none",
     padding: "8px 12px",
     background: "none",
@@ -34,6 +36,7 @@ export function Button({
   color = "highlight",
   disabled = false,
   onClick,
+  size = "middle",
 }: ButtonPropsType): JSX.Element {
   const { classes } = useStyles();
   const theme = useTheme();
@@ -52,20 +55,26 @@ export function Button({
         ? theme.palette.background.primary
         : theme.palette.background.secondary;
 
+    const padding = size === "middle" ? "8px 12px" : size === "small" ? "4px 4px" : "12px 16px";
+
     switch (variant) {
       case "outlined":
-        return {};
+        return {
+          padding,
+        };
       case "link":
         return {
           color: textColor,
+          padding,
         };
       default:
         return {
           background: bgColor,
           color: textColor,
+          padding,
         };
     }
-  }, [variant, color, theme]);
+  }, [variant, color, theme, size]);
 
   return (
     <button

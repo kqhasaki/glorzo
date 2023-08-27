@@ -6,10 +6,14 @@ import PauseIcon from "@mui/icons-material/Pause";
 import FastForwardIcon from "@mui/icons-material/FastForward";
 import FastRewindIcon from "@mui/icons-material/FastRewind";
 import RepeatIcon from "@mui/icons-material/Repeat";
+import VolumeDown from "@mui/icons-material/VolumeDown";
+import VolumeUp from "@mui/icons-material/VolumeUp";
 import { Button } from "../Button";
 import { makeStyles } from "@glorzo-player/theme";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { updateControls, play, pause } from "@glorzo-player/store/playerStateSlice";
+import { getDownloadUrl } from "@glorzo-player/api/request";
+import { Slider } from "../Slider";
 
 const useStyles = makeStyles()((theme) => ({
   wrapper: {
@@ -20,10 +24,11 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.text.secondary,
   },
   controls: {
+    height: "100%",
     width: "30%",
     display: "flex",
     justifyContent: "center",
-    gap: "12px",
+    gap: "4px",
     alignItems: "center",
   },
   songNavigator: {
@@ -35,16 +40,23 @@ const useStyles = makeStyles()((theme) => ({
   },
   songPlayer: {
     width: "40%",
+    height: "100%",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
-    background: theme.palette.background.secondary,
+  },
+  slider: {
+    WebkitAppRegion: "no-drag",
+    width: "60%",
+    height: "50%",
+    maxWidth: "80px",
   },
 }));
 
 export function MiniPlayer(): JSX.Element {
   const playerState = useAppSelector((state) => state.playerState.value);
   const dispatch = useAppDispatch();
+  const audioRef = useRef<HTMLAudioElement>(null);
   const { classes } = useStyles();
 
   const changePlayerStrategy = useCallback(() => {
@@ -60,6 +72,44 @@ export function MiniPlayer(): JSX.Element {
         return;
     }
   }, [dispatch, playerState.controls.strategy]);
+
+  const audioSource = useMemo(() => {
+    if (playerState.song == undefined) {
+      return undefined;
+    }
+    const { audioFile } = playerState.song;
+    if (typeof audioFile === "string") {
+      return getDownloadUrl(audioFile);
+    } else {
+      return undefined;
+    }
+  }, [playerState.song]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      try {
+        if (playerState.status === "PLAYING") {
+          audioElement.pause();
+          setTimeout(() => {
+            audioElement.play();
+          }, 150);
+        }
+        if (playerState.status === "PAUSED") {
+          audioElement.pause();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [playerState.song?.id, playerState.status]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.volume = playerState.controls.volume;
+    }
+  }, [playerState.controls.volume]);
 
   return (
     <div className={classes.wrapper}>
@@ -93,8 +143,34 @@ export function MiniPlayer(): JSX.Element {
           </Button>
         </div>
       </div>
-      <div className={classes.songPlayer}>{playerState.song?.name}</div>
-      <div className={classes.controls}>control</div>
+      <div className={classes.songPlayer}>
+        <audio ref={audioRef} src={audioSource}></audio>
+        {playerState.song?.name}
+      </div>
+      <div className={classes.controls}>
+        <Button
+          variant="link"
+          color="secondary"
+          size="small"
+          onClick={() => dispatch(updateControls({ volume: 0 }))}
+        >
+          <VolumeDown fontSize="small" />
+        </Button>
+        <div className={classes.slider}>
+          <Slider
+            value={playerState.controls.volume}
+            onChange={(value) => dispatch(updateControls({ volume: value }))}
+          />
+        </div>
+        <Button
+          variant="link"
+          color="secondary"
+          size="small"
+          onClick={() => dispatch(updateControls({ volume: 1.0 }))}
+        >
+          <VolumeUp fontSize="small" />
+        </Button>
+      </div>
     </div>
   );
 }
