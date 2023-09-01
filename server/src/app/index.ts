@@ -67,6 +67,8 @@ app.get("/download", async (req, res) => {
   try {
     const { content, res: result } = await downloadFile(target);
     res.setHeader("Content-Type", (result.headers as any)["content-type"]!);
+    res.setHeader("Accept-Range", "bytes");
+    res.setHeader("Cache-Control", `public, max-age=7200`);
     res.status(200).write(content);
     res.end();
   } catch (err) {

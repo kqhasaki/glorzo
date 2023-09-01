@@ -13,7 +13,10 @@ type Theme = {
       paper: string;
       primary: string;
       secondary: string;
-      transparent: string;
+      transparent: {
+        primary: string;
+        secondary: string;
+      };
       highlight: string;
     };
     text: {
@@ -61,7 +64,10 @@ const darkTheme: Theme = {
       primary: "rgba(39, 29, 28)",
       secondary: "rgba(39, 29, 28)",
       highlight: "rgba(194, 56, 48)",
-      transparent: "rgba(44, 33, 31, 0.8)",
+      transparent: {
+        primary: "rgba(44, 33, 31, 0.75)",
+        secondary: "rgba(29, 19, 18, 0.1)",
+      },
     },
     text: {
       primary: "rgba(255, 255, 255)",
@@ -82,7 +88,10 @@ const brightTheme: Theme = {
       paper: "rgba(255, 255, 255)",
       primary: "rgba(245, 245, 245)",
       secondary: "rgba(250, 250, 250)",
-      transparent: "rgba(255, 255, 255, 0.8)",
+      transparent: {
+        primary: "rgba(255, 255, 255, 0.8)",
+        secondary: "rgba(240, 240, 240, 0.8)",
+      },
       highlight: "rgba(194, 56, 48)",
     },
     text: {

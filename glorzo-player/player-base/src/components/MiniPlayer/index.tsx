@@ -1,3 +1,4 @@
+import { getFormattedDuration } from "@glorzo-player/utils";
 import { useAppSelector, useAppDispatch } from "@glorzo-player/hooks";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
@@ -11,7 +12,12 @@ import VolumeUp from "@mui/icons-material/VolumeUp";
 import { Button } from "../Button";
 import { makeStyles } from "@glorzo-player/theme";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { updateControls, play, pause } from "@glorzo-player/store/playerStateSlice";
+import {
+  updateControls,
+  play,
+  pause,
+  updateSongStatus,
+} from "@glorzo-player/store/playerStateSlice";
 import { getDownloadUrl } from "@glorzo-player/api/request";
 import { Slider } from "../Slider";
 
@@ -25,31 +31,68 @@ const useStyles = makeStyles()((theme) => ({
   },
   controls: {
     height: "100%",
-    width: "30%",
+    width: "25%",
     display: "flex",
     justifyContent: "center",
     gap: "4px",
     alignItems: "center",
   },
   songNavigator: {
-    width: "30%",
+    width: "25%",
     display: "flex",
     justifyContent: "center",
     gap: "16px",
     alignItems: "center",
   },
   songPlayer: {
-    width: "40%",
+    width: "50%",
     height: "100%",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
+    background: theme.palette.background.transparent.secondary,
+  },
+  songPicture: {
+    height: "100%",
+    aspectRatio: "1 / 1",
+    "& img": {
+      height: "100%",
+    },
+  },
+  songInfo: {
+    width: "100%",
+    height: "100%",
+    textAlign: "center",
+    position: "relative",
+  },
+  songTitle: {
+    fontSize: "14px",
+    marginTop: "8px",
+    color: theme.palette.text.primary,
+  },
+  songArtist: {
+    marginTop: "8px",
+    fontSize: "13px",
   },
   slider: {
     WebkitAppRegion: "no-drag",
     width: "60%",
     height: "50%",
     maxWidth: "80px",
+  },
+  songCurrentTime: {
+    position: "absolute",
+    bottom: "4px",
+    left: "4px",
+    fontSize: "12px",
+    color: theme.palette.text.secondary,
+  },
+  songDuration: {
+    position: "absolute",
+    bottom: "4px",
+    right: "4px",
+    fontSize: "12px",
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -81,6 +124,20 @@ export function MiniPlayer(): JSX.Element {
     if (typeof audioFile === "string") {
       return getDownloadUrl(audioFile);
     } else {
+      // TODO: implement local song situation
+      return undefined;
+    }
+  }, [playerState.song]);
+
+  const pictureSource = useMemo(() => {
+    if (playerState.song == undefined) {
+      return undefined;
+    }
+    const { picture } = playerState.song;
+    if (typeof picture === "string") {
+      return getDownloadUrl(picture);
+    } else {
+      // TODO: implement local song situation
       return undefined;
     }
   }, [playerState.song]);
@@ -111,6 +168,31 @@ export function MiniPlayer(): JSX.Element {
     }
   }, [playerState.controls.volume]);
 
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement == undefined) {
+      return;
+    }
+    const timeupdateHanlder = () => {
+      dispatch(
+        updateSongStatus({ duration: audioElement.duration, timeCursor: audioElement.currentTime })
+      );
+    };
+    audioElement.addEventListener("timeupdate", timeupdateHanlder);
+
+    return () => {
+      audioElement.removeEventListener("timeupdate", timeupdateHanlder);
+    };
+  }, [playerState.song?.id, dispatch]);
+
+  const handleChangeTimeCursor = useCallback((value: number) => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      const timeCursor = audioElement.duration * value;
+      audioElement.currentTime = timeCursor;
+    }
+  }, []);
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.songNavigator}>
@@ -121,7 +203,12 @@ export function MiniPlayer(): JSX.Element {
         </Button>
 
         <div>
-          <Button variant="link" color="secondary" disabled={playerState.status === "IDLE"}>
+          <Button
+            variant="link"
+            color="secondary"
+            disabled={playerState.status === "IDLE"}
+            size="small"
+          >
             <FastRewindIcon />
           </Button>
           {playerState.status !== "PLAYING" ? (
@@ -130,11 +217,12 @@ export function MiniPlayer(): JSX.Element {
               color="secondary"
               disabled={playerState.status === "IDLE"}
               onClick={() => dispatch(play())}
+              size="small"
             >
               <PlayArrowIcon />
             </Button>
           ) : (
-            <Button variant="link" color="secondary" onClick={() => dispatch(pause())}>
+            <Button variant="link" color="secondary" onClick={() => dispatch(pause())} size="small">
               <PauseIcon />
             </Button>
           )}
@@ -144,8 +232,34 @@ export function MiniPlayer(): JSX.Element {
         </div>
       </div>
       <div className={classes.songPlayer}>
-        <audio ref={audioRef} src={audioSource}></audio>
-        {playerState.song?.name}
+        <audio ref={audioRef} src={audioSource} style={{ display: "none" }} />
+        <div className={classes.songPicture}>{pictureSource && <img src={pictureSource} />}</div>
+        <div className={classes.songInfo}>
+          {playerState.song && (
+            <>
+              <div className={classes.songTitle}>{playerState.song?.name}</div>
+              <div className={classes.songArtist}>
+                {playerState.song?.artist} - {playerState.song?.album}
+              </div>
+
+              {playerState.song.duration != undefined &&
+                playerState.song.timeCursor != undefined && (
+                  <>
+                    <div className={classes.songDuration}>
+                      {getFormattedDuration(playerState.song.duration)}
+                    </div>
+                    <div className={classes.songCurrentTime}>
+                      {getFormattedDuration(playerState.song.timeCursor)}
+                    </div>
+                    <Slider
+                      value={playerState.song.timeCursor / playerState.song.duration!}
+                      onChange={handleChangeTimeCursor}
+                    />
+                  </>
+                )}
+            </>
+          )}
+        </div>
       </div>
       <div className={classes.controls}>
         <Button

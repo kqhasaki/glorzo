@@ -60,7 +60,7 @@ const useStyles = makeStyles()((theme) => ({
     position: "absolute",
     top: 0,
     width: "100%",
-    background: theme.palette.background.transparent,
+    background: theme.palette.background.transparent.primary,
     borderBottom: `1px solid ${theme.palette.divider.secondary}`,
     backdropFilter: "blur(30px)",
     WebkitAppRegion: "drag",
