@@ -124,17 +124,9 @@ export function Slider({
     if (sliderWrapper == undefined) {
       return;
     }
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutaion) => {
-        if (mutaion.target === sliderWrapper) {
-          updateCachedBoudingRect();
-        }
-      });
+    window.addEventListener("resize", () => {
+      updateCachedBoudingRect();
     });
-    observer.observe(sliderWrapper, { attributes: true, attributeFilter: ["style"] });
-    return () => {
-      observer.disconnect();
-    };
   }, [updateCachedBoudingRect]);
 
   return (

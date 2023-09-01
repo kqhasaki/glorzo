@@ -51,12 +51,14 @@ export const GlobalAudioElementProvider = (props: { children: ReactNode }) => {
   useEffect(() => {
     document.body.appendChild(globalAudioElement);
     globalAudioElement.addEventListener("timeupdate", () => {
-      dispatch(
-        updateSongStatus({
-          timeCursor: globalAudioElement.currentTime,
-          duration: globalAudioElement.duration,
-        })
-      );
+      if (!Number.isNaN(globalAudioElement.duration)) {
+        dispatch(
+          updateSongStatus({
+            timeCursor: globalAudioElement.currentTime,
+            duration: globalAudioElement.duration,
+          })
+        );
+      }
     });
   }, [globalAudioElement, dispatch]);
 
