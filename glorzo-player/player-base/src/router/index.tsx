@@ -6,12 +6,12 @@ import Upload from "@glorzo-player/pages/Upload";
 export const routes: Array<RouteObject & { label: string }> = [
   {
     path: "/",
-    label: "Library",
+    label: "曲库",
     element: <Layout content={<SongLibrary />} />,
   },
   {
     path: "/upload",
-    label: "Upload",
+    label: "上传",
     element: <Layout content={<Upload />} />,
   },
 ];

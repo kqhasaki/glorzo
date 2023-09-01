@@ -142,7 +142,7 @@ export default function Upload(): JSX.Element {
 
   return (
     <main className={classes.mainWrapper}>
-      <h1>Upload</h1>
+      <h1>歌曲上传</h1>
       <div className={classes.uploadForm}>
         {songs.length > 0 && <UploadHeader />}
         {songs.map((song, idx) => (
