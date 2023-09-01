@@ -11,15 +11,11 @@ import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 import { Button } from "../Button";
 import { makeStyles } from "@glorzo-player/theme";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import {
-  updateControls,
-  play,
-  pause,
-  updateSongStatus,
-} from "@glorzo-player/store/playerStateSlice";
+import { useCallback, useMemo } from "react";
+import { updateControls, play, pause } from "@glorzo-player/store/playerStateSlice";
 import { getDownloadUrl } from "@glorzo-player/api/request";
 import { Slider } from "../Slider";
+import { useGlobalAudioElement } from "@glorzo-player/contexts/GlobalAudioElement";
 
 const useStyles = makeStyles()((theme) => ({
   wrapper: {
@@ -94,12 +90,18 @@ const useStyles = makeStyles()((theme) => ({
     fontSize: "12px",
     color: theme.palette.text.secondary,
   },
+  sliderWrapper: {
+    width: "100%",
+    height: "24px",
+    zIndex: 99,
+    position: "absolute",
+    bottom: "-12px",
+  },
 }));
 
 export function MiniPlayer(): JSX.Element {
   const playerState = useAppSelector((state) => state.playerState.value);
   const dispatch = useAppDispatch();
-  const audioRef = useRef<HTMLAudioElement>(null);
   const { classes } = useStyles();
 
   const changePlayerStrategy = useCallback(() => {
@@ -116,19 +118,6 @@ export function MiniPlayer(): JSX.Element {
     }
   }, [dispatch, playerState.controls.strategy]);
 
-  const audioSource = useMemo(() => {
-    if (playerState.song == undefined) {
-      return undefined;
-    }
-    const { audioFile } = playerState.song;
-    if (typeof audioFile === "string") {
-      return getDownloadUrl(audioFile);
-    } else {
-      // TODO: implement local song situation
-      return undefined;
-    }
-  }, [playerState.song]);
-
   const pictureSource = useMemo(() => {
     if (playerState.song == undefined) {
       return undefined;
@@ -142,56 +131,7 @@ export function MiniPlayer(): JSX.Element {
     }
   }, [playerState.song]);
 
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (audioElement) {
-      try {
-        if (playerState.status === "PLAYING") {
-          audioElement.pause();
-          setTimeout(() => {
-            audioElement.play();
-          }, 150);
-        }
-        if (playerState.status === "PAUSED") {
-          audioElement.pause();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }, [playerState.song?.id, playerState.status]);
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (audioElement) {
-      audioElement.volume = playerState.controls.volume;
-    }
-  }, [playerState.controls.volume]);
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (audioElement == undefined) {
-      return;
-    }
-    const timeupdateHanlder = () => {
-      dispatch(
-        updateSongStatus({ duration: audioElement.duration, timeCursor: audioElement.currentTime })
-      );
-    };
-    audioElement.addEventListener("timeupdate", timeupdateHanlder);
-
-    return () => {
-      audioElement.removeEventListener("timeupdate", timeupdateHanlder);
-    };
-  }, [playerState.song?.id, dispatch]);
-
-  const handleChangeTimeCursor = useCallback((value: number) => {
-    const audioElement = audioRef.current;
-    if (audioElement) {
-      const timeCursor = audioElement.duration * value;
-      audioElement.currentTime = timeCursor;
-    }
-  }, []);
+  const globalAudioElement = useGlobalAudioElement();
 
   return (
     <div className={classes.wrapper}>
@@ -232,7 +172,6 @@ export function MiniPlayer(): JSX.Element {
         </div>
       </div>
       <div className={classes.songPlayer}>
-        <audio ref={audioRef} src={audioSource} style={{ display: "none" }} />
         <div className={classes.songPicture}>{pictureSource && <img src={pictureSource} />}</div>
         <div className={classes.songInfo}>
           {playerState.song && (
@@ -251,10 +190,16 @@ export function MiniPlayer(): JSX.Element {
                     <div className={classes.songCurrentTime}>
                       {getFormattedDuration(playerState.song.timeCursor)}
                     </div>
-                    <Slider
-                      value={playerState.song.timeCursor / playerState.song.duration!}
-                      onChange={handleChangeTimeCursor}
-                    />
+                    <div className={classes.sliderWrapper}>
+                      <Slider
+                        autoHideThumb
+                        size="small"
+                        value={playerState.song.timeCursor / playerState.song.duration!}
+                        onChange={(value) => {
+                          globalAudioElement.currentTime = globalAudioElement.duration * value;
+                        }}
+                      />
+                    </div>
                   </>
                 )}
             </>

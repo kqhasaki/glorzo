@@ -19,6 +19,12 @@ export function getDownloadUrl(target: string): string {
   return url;
 }
 
+export async function downloadFromUrl(target: string): Promise<ArrayBuffer> {
+  const url = getDownloadUrl(target);
+  const result = await fetch(url).then(async (res) => await res.arrayBuffer());
+  return result;
+}
+
 export async function uploadFile(fileName: string, buffer: ArrayBuffer): Promise<string> {
   const result = await fetch(`${API_BASE_URL}/uploadFile`, {
     method: "POST",

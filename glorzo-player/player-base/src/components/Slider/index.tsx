@@ -1,18 +1,29 @@
 import { makeStyles } from "@glorzo-player/theme";
 import { useCallback, useRef, useLayoutEffect, useEffect } from "react";
+import { clsx } from "clsx";
 
 export type SliderPropsType = {
   value: number;
   onChange: (value: number) => void;
   size?: "small" | "medium" | "large";
+  autoHideThumb?: boolean;
 };
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<void, "thumb">()((theme, _, classes) => ({
   sliderWrapper: {
     width: "100%",
     height: "100%",
     position: "relative",
     cursor: "pointer",
+    WebkitAppRegion: "no-drag",
+  },
+  autoHideThumb: {
+    [`& .${classes.thumb}`]: {
+      visibility: "hidden",
+    },
+    [`&:hover .${classes.thumb}`]: {
+      visibility: "visible",
+    },
   },
   track: {
     width: "100%",
@@ -22,6 +33,7 @@ const useStyles = makeStyles()((theme) => ({
     transform: "translateY(-50%)",
   },
   thumb: {
+    zIndex: 10,
     position: "absolute",
     top: "50%",
     transform: "translate(-50%, -50%)",
@@ -42,7 +54,12 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-export function Slider({ value, onChange, size = "medium" }: SliderPropsType): JSX.Element {
+export function Slider({
+  value,
+  onChange,
+  size = "medium",
+  autoHideThumb = false,
+}: SliderPropsType): JSX.Element {
   const { classes } = useStyles();
   const trackStrokeWidth = size === "medium" ? 1 : size === "large" ? 2 : 0.5;
   const sliderWrapperRef = useRef<HTMLDivElement>(null);
@@ -121,7 +138,11 @@ export function Slider({ value, onChange, size = "medium" }: SliderPropsType): J
   }, [updateCachedBoudingRect]);
 
   return (
-    <div ref={sliderWrapperRef} className={classes.sliderWrapper} onMouseDown={handleMouseDown}>
+    <div
+      ref={sliderWrapperRef}
+      className={clsx({ [classes.sliderWrapper]: true, [classes.autoHideThumb]: autoHideThumb })}
+      onMouseDown={handleMouseDown}
+    >
       <div className={classes.track} style={{ height: trackStrokeWidth }} />
       <div className={classes.thumb} style={{ left: `${value * 100}%` }} />
       <div
