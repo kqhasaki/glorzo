@@ -19,10 +19,10 @@ const useStyles = makeStyles<void, "thumb">()((theme, _, classes) => ({
   },
   autoHideThumb: {
     [`& .${classes.thumb}`]: {
-      visibility: "hidden",
+      transform: "translate(-50%, -50%) scale(0)",
     },
     [`&:hover .${classes.thumb}`]: {
-      visibility: "visible",
+      transform: "translate(-50%, -50%) scale(1.0)",
     },
   },
   track: {
@@ -47,8 +47,8 @@ const useStyles = makeStyles<void, "thumb">()((theme, _, classes) => ({
   trackFilled: {
     transition: "50ms",
     position: "absolute",
-    top: "50%",
     transform: "translateY(-50%)",
+    top: "50%",
     background: theme.palette.text.secondary,
     borderRadius: "1px",
   },
