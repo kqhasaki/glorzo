@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express from "express";
+import { app } from "./index";
 import { uploadFile, downloadFile } from "@glorzo-server/oss";
 import { JSONResponseSuccessType, ResponseErrorType } from "./types";
 import { Song } from "@glorzo-server/db/song";
-
-export const app = express();
-app.use(express.json());
-
-const PORT = process.env.PORT ?? 3000;
+import { verifyToken } from "./auth";
 
 /**
  * 获取所有的歌曲信息
@@ -32,7 +28,7 @@ app.get("/songs", async (_, res) => {
 /**
  * 提供OSS文件上传接口
  */
-app.post("/uploadFile", (req, res) => {
+app.post("/uploadFile", verifyToken, (req, res) => {
   if (req.headers["content-type"] !== "application/octet-stream") {
     res.status(400).json({ error: "Invalid content type" });
   }
@@ -107,7 +103,7 @@ app.post("/songExists", async (req, res) => {
 /**
  * 新建歌曲条目
  */
-app.post("/createSong", async (req, res) => {
+app.post("/createSongTest", verifyToken, async (req, res) => {
   const { name, artist, pictureUrl, uploader, audioUrl, album, sha256 } = req.body;
   try {
     const newSong = await Song.create({
@@ -132,5 +128,3 @@ app.post("/createSong", async (req, res) => {
     res.status(500).json(errorRes);
   }
 });
-
-app.listen(PORT);
