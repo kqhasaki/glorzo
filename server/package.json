@@ -17,6 +17,7 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/moment": "^2.13.0",
+    "clean-webpack-plugin": "^4.0.0",
     "pg-hstore": "^2.3.4"
   }
 }

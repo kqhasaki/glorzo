@@ -1,11 +1,12 @@
 import path from "path";
 import { Configuration } from "webpack";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 const config: Configuration = {
   target: "node",
   context: path.resolve(__dirname, "."),
-  entry: "./src/app/index.ts",
+  entry: "./src/app.ts",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, ".webpack"),
@@ -25,7 +26,7 @@ const config: Configuration = {
       },
     ],
   },
-  plugins: [new ForkTsCheckerWebpackPlugin()],
+  plugins: [new CleanWebpackPlugin(), new ForkTsCheckerWebpackPlugin()],
 };
 
 export default config;

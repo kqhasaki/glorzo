@@ -1,5 +1,5 @@
 import OSS from "ali-oss";
-import { isURL } from "@glorzo-server/app/utils";
+import { isURL } from "@glorzo-server/utils";
 
 const songStore = new OSS({
   accessKeyId: process.env.GLORZO_OSS_ACCESSKEYID!,
@@ -8,17 +8,12 @@ const songStore = new OSS({
   bucket: process.env.GLORZO_OSS_BUCKET!,
 });
 
-export async function uploadFile(
-  name: string,
-  file: Buffer
-): Promise<OSS.PutObjectResult> {
+export async function uploadFile(name: string, file: Buffer): Promise<OSS.PutObjectResult> {
   const result = await songStore.put(name, file);
   return result;
 }
 
-export async function downloadFile(
-  target: string
-): Promise<OSS.GetObjectResult> {
+export async function downloadFile(target: string): Promise<OSS.GetObjectResult> {
   let filename;
   if (isURL(target)) {
     const url = new URL(target);

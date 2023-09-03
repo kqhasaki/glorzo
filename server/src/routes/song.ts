@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { app } from "./index";
 import { uploadFile, downloadFile } from "@glorzo-server/oss";
-import { JSONResponseSuccessType, ResponseErrorType } from "./types";
-import { Song } from "@glorzo-server/db/song";
-import { verifyToken } from "./auth";
+import { JSONResponseSuccessType, ResponseErrorType } from "../types";
+import { Song } from "@glorzo-server/models/song";
+import { verifyToken } from "../middlewares/auth";
+import { Router } from "express";
+
+const songRouter = Router();
 
 /**
  * 获取所有的歌曲信息
  */
-app.get("/songs", async (_, res) => {
+songRouter.get("/songs", async (_, res) => {
   try {
     const songs = await Song.findAll();
     const successRes: JSONResponseSuccessType<Song[]> = {
@@ -28,7 +30,7 @@ app.get("/songs", async (_, res) => {
 /**
  * 提供OSS文件上传接口
  */
-app.post("/uploadFile", verifyToken, (req, res) => {
+songRouter.post("/uploadFile", verifyToken, (req, res) => {
   if (req.headers["content-type"] !== "application/octet-stream") {
     res.status(400).json({ error: "Invalid content type" });
   }
@@ -50,7 +52,7 @@ app.post("/uploadFile", verifyToken, (req, res) => {
 /**
  * 提供OSS文件下载接口
  */
-app.get("/download", async (req, res) => {
+songRouter.get("/download", async (req, res) => {
   const target = req.query.target;
   if (typeof target !== "string") {
     const errRes: ResponseErrorType = {
@@ -78,7 +80,7 @@ app.get("/download", async (req, res) => {
 /**
  * 检查音频文件是否已经存在
  */
-app.post("/songExists", async (req, res) => {
+songRouter.post("/songExists", async (req, res) => {
   const { sha256 } = req.body;
   try {
     const exists = await Song.findOne({
@@ -103,7 +105,7 @@ app.post("/songExists", async (req, res) => {
 /**
  * 新建歌曲条目
  */
-app.post("/createSongTest", verifyToken, async (req, res) => {
+songRouter.post("/createSongTest", verifyToken, async (req, res) => {
   const { name, artist, pictureUrl, uploader, audioUrl, album, sha256 } = req.body;
   try {
     const newSong = await Song.create({
@@ -128,3 +130,5 @@ app.post("/createSongTest", verifyToken, async (req, res) => {
     res.status(500).json(errorRes);
   }
 });
+
+export default songRouter;

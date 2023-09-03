@@ -5760,6 +5760,7 @@ __metadata:
     "@types/moment": ^2.13.0
     ali-oss: ^6.18.0
     bcrypt: ^5.1.1
+    clean-webpack-plugin: ^4.0.0
     express: ^4.18.2
     jsonwebtoken: ^9.0.2
     moment: ^2.29.4
