@@ -4,6 +4,7 @@ import { ReactNode, useRef } from "react";
 import { useCallback } from "react";
 import { MiniPlayer } from "./MiniPlayer";
 import { clsx } from "clsx";
+import Login from "@glorzo-player/pages/Login";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -113,6 +114,8 @@ export default function Layout({ content }: { content: ReactNode }): JSX.Element
           {content}
         </div>
       </div>
+
+      <Login />
     </div>
   );
 }

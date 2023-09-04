@@ -46,6 +46,9 @@ export function webpackDevServerConfig(params: WebpackConfigParams): Configurati
       //  "[WDS] Disconnected!"
       // Since we are only connecting to localhost, DNS rebinding attacks are not a concern during dev
       allowedHosts: "all",
+      client: {
+        overlay: false,
+      },
     },
     plugins: [
       new CleanWebpackPlugin(),
