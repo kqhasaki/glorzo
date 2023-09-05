@@ -1,6 +1,6 @@
 import { Modal } from "@glorzo-player/components/Modal";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { axiosInstance, signUp } from "@glorzo-player/api/request";
+import { axiosInstance, signUp, login } from "@glorzo-player/api/request";
 import { HttpStatusCode, AxiosResponse } from "axios";
 import { Button } from "@glorzo-player/components/Button";
 import { makeStyles } from "@glorzo-player/theme";
@@ -74,8 +74,11 @@ function LoginForm(): JSX.Element {
     return [...Object.values(formData)].every((item) => item.valid);
   }, [formData]);
 
-  const login = useCallback(() => {
-    console.log(formData);
+  const handleLogin = useCallback(async () => {
+    const result = await login({
+      username: formData.username.value,
+      password: getHashedPassword(formData.password.value),
+    });
   }, [formData]);
 
   return (
@@ -119,7 +122,7 @@ function LoginForm(): JSX.Element {
         <div className={classes.validationMessage}>{formData.password.validMessage}</div>
       </div>
 
-      <Button variant="contained" disabled={!canSubmit} onClick={login}>
+      <Button variant="contained" disabled={!canSubmit} onClick={handleLogin}>
         登录
       </Button>
     </form>

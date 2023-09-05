@@ -75,3 +75,8 @@ export async function signUp(user: {
   const result = await axiosInstance.post("/signUp", { ...user });
   return result;
 }
+
+export async function login(user: { username: string; password: string }): Promise<unknown> {
+  const result = await axiosInstance.post("/login", { ...user });
+  return result;
+}
