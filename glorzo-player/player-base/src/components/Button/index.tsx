@@ -78,6 +78,7 @@ export function Button({
 
   return (
     <button
+      type="button"
       style={styles}
       className={classes.wrapper}
       onClick={

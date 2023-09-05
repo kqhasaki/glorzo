@@ -66,3 +66,12 @@ export async function songExists(sha256: string): Promise<boolean> {
   const exist = result.data.data;
   return exist;
 }
+
+export async function signUp(user: {
+  username: string;
+  email: string;
+  password: string;
+}): Promise<unknown> {
+  const result = await axiosInstance.post("/signUp", { ...user });
+  return result;
+}

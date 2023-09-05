@@ -2,6 +2,10 @@ import type { LocalSong, SongTags } from "@glorzo-player/types/Songs";
 import jsmediatags from "jsmediatags";
 import { SHA256, lib } from "crypto-js";
 
+export function getHashedPassword(password: string): string {
+  return SHA256(password).toString();
+}
+
 export function arrayBufferToBase64Str(buff: ArrayBuffer): string {
   const uint8Array = new Uint8Array(buff);
   const binaryString = uint8Array.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
