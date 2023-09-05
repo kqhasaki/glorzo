@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { sequelize } from "./connection";
 import "./song";
+import "./user";
 
 async function sync() {
   try {
