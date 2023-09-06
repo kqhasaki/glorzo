@@ -1,6 +1,8 @@
 import { User } from "@glorzo-server/models/user";
 import { JSONResponseSuccessType, ResponseErrorType } from "@glorzo-server/types";
 import { Router } from "express";
+import jwt from "jsonwebtoken";
+import { secretKey } from "@glorzo-server/middlewares/auth";
 
 const userRouter = Router();
 
@@ -44,9 +46,16 @@ userRouter.post("/login", async (req, res) => {
       throw new Error(`用户${username}未注册`);
     }
     if (user.password === password) {
+      const token = jwt.sign(
+        {
+          id: user.id,
+          name: user.name,
+        },
+        secretKey
+      );
       const successRes: JSONResponseSuccessType = {
         success: true,
-        data: user.toJSON(),
+        data: { id: user.id, name: user.name, email: user.email, token },
       };
       res.status(200).json(successRes);
     } else {

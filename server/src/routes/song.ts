@@ -105,8 +105,9 @@ songRouter.post("/songExists", async (req, res) => {
 /**
  * 新建歌曲条目
  */
-songRouter.post("/createSongTest", verifyToken, async (req, res) => {
-  const { name, artist, pictureUrl, uploader, audioUrl, album, sha256 } = req.body;
+songRouter.post("/createSong", verifyToken, async (req, res) => {
+  const { name, artist, pictureUrl, audioUrl, album, sha256 } = req.body;
+  const uploader = res.locals.user.id;
   try {
     const newSong = await Song.create({
       album,

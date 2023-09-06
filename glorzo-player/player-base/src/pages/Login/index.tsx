@@ -52,7 +52,7 @@ type FormValueItem = {
   validMessage: string;
 };
 
-function LoginForm(): JSX.Element {
+function LoginForm({ onSuccess }: { onSuccess: () => void }): JSX.Element {
   const { classes } = useStyles();
   const [formData, setFormData] = useState<{
     username: FormValueItem;
@@ -75,11 +75,13 @@ function LoginForm(): JSX.Element {
   }, [formData]);
 
   const handleLogin = useCallback(async () => {
-    const result = await login({
+    const user = await login({
       username: formData.username.value,
       password: getHashedPassword(formData.password.value),
     });
-  }, [formData]);
+    localStorage.setItem("glorzo-user", JSON.stringify(user));
+    onSuccess();
+  }, [formData, onSuccess]);
 
   return (
     <form className={classes.form}>
@@ -129,7 +131,7 @@ function LoginForm(): JSX.Element {
   );
 }
 
-function SignUpForm(): JSX.Element {
+function SignUpForm({ onSuccess }: { onSuccess: () => void }): JSX.Element {
   const { classes } = useStyles();
   const [formData, setFormData] = useState<{
     username: FormValueItem;
@@ -158,13 +160,13 @@ function SignUpForm(): JSX.Element {
   }, [formData]);
 
   const signup = useCallback(async () => {
-    const result = await signUp({
+    await signUp({
       username: formData.username.value,
       email: formData.email.value,
       password: getHashedPassword(formData.password.value),
     });
-    console.log(result);
-  }, [formData]);
+    onSuccess();
+  }, [formData, onSuccess]);
 
   return (
     <form className={classes.form}>
@@ -264,7 +266,7 @@ export default function Login(): JSX.Element {
     >
       {mode === "signin" && (
         <>
-          <LoginForm />
+          <LoginForm onSuccess={() => setModalOpen(false)} />
           <div className={classes.navLine} onClick={() => setMode("signup")}>
             注册Glorzo账号
           </div>
@@ -272,7 +274,7 @@ export default function Login(): JSX.Element {
       )}
       {mode === "signup" && (
         <>
-          <SignUpForm />
+          <SignUpForm onSuccess={() => setMode("signin")} />
           <div className={classes.navLine} onClick={() => setMode("signin")}>
             返回登录
           </div>

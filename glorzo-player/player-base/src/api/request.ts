@@ -1,6 +1,8 @@
-import type { JSONResponseSuccessType } from "@glorzo-server/types";
-import type { LocalSong } from "@glorzo-player/types/Songs";
-import type { RemoteSong } from "@glorzo-player/types/Songs";
+import type { JSONResponseSuccessType, ResponseErrorType } from "@glorzo-server/types";
+import type { LocalSong, RemoteSong } from "@glorzo-player/types/Songs";
+import type { User } from "@glorzo-player/types/User";
+import { getCurrentUser } from "@glorzo-player/utils";
+
 import axios from "axios";
 
 export const API_BASE_URL = "http://localhost:3000";
@@ -9,6 +11,19 @@ export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 60000,
 });
+
+axiosInstance.interceptors.request.use(
+  function (config) {
+    const user = getCurrentUser();
+    if (user) {
+      config.headers.Authorization = user.token;
+    }
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 export async function getAllSongs(): Promise<RemoteSong[]> {
   const res = (await axiosInstance.get(`/songs`)).data as JSONResponseSuccessType<RemoteSong[]>;
@@ -54,7 +69,6 @@ export async function createSong({
     album: song.tags.album,
     pictureUrl,
     audioUrl,
-    uploader: 1,
     sha256: song.sha256,
   });
 }
@@ -71,12 +85,17 @@ export async function signUp(user: {
   username: string;
   email: string;
   password: string;
-}): Promise<unknown> {
-  const result = await axiosInstance.post("/signUp", { ...user });
-  return result;
+}): Promise<boolean> {
+  const result = (
+    await axiosInstance.post("/signUp", {
+      ...user,
+    })
+  ).data as JSONResponseSuccessType | ResponseErrorType;
+  return result.success;
 }
 
-export async function login(user: { username: string; password: string }): Promise<unknown> {
-  const result = await axiosInstance.post("/login", { ...user });
-  return result;
+export async function login(user: { username: string; password: string }): Promise<User> {
+  const result = (await axiosInstance.post("/login", { ...user }))
+    .data as JSONResponseSuccessType<User>;
+  return result.data;
 }

@@ -1,6 +1,7 @@
 import type { LocalSong, SongTags } from "@glorzo-player/types/Songs";
 import jsmediatags from "jsmediatags";
 import { SHA256, lib } from "crypto-js";
+import { User } from "@glorzo-player/types/User";
 
 export function getHashedPassword(password: string): string {
   return SHA256(password).toString();
@@ -72,4 +73,13 @@ export async function parseSongFromFile(file: File): Promise<LocalSong> {
     duration,
     sha256,
   };
+}
+
+export function getCurrentUser(): User | undefined {
+  try {
+    const user = localStorage.getItem("glorzo-user");
+    return JSON.parse(user!) as User;
+  } catch (err) {
+    return undefined;
+  }
 }
