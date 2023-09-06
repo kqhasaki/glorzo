@@ -1,5 +1,9 @@
 # Glorzo-Player 创造属于自己的音乐播放器
 
+![截屏2023-09-07 00.01.24.png](https://s2.loli.net/2023/09/07/voK8fVr2zwuhcHJ.png)
+
+![截屏2023-09-07 00.00.33.png](https://s2.loli.net/2023/09/07/iEjrFsMO52gxRW4.png)
+
 > 尚处于早期阶段，持续开发中～
 
 兴趣使然的项目。
@@ -29,7 +33,3 @@ yarn desktop:serve
 
 yarn desktop:start
 ```
-
-# App截图
-
-![截屏2023-09-01 23.22.48.png](https://s2.loli.net/2023/09/01/wSQj4kVFpxgK3ci.png)
