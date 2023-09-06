@@ -9,13 +9,17 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
   },
   navLink: {
-    display: "block",
+    display: "flex",
     textDecoration: "none",
+    alignItems: "center",
     color: theme.palette.text.primary,
     margin: "0px 12px",
     borderRadius: "6px",
-    padding: "8px 20px 8px 30px",
-    fontSize: "14px",
+    padding: "6px 20px 6px 30px",
+    fontSize: "13px",
+    "& > span": {
+      marginLeft: "8px",
+    },
   },
   selectedNavLink: {
     background: theme.palette.background.highlight,
@@ -25,6 +29,9 @@ const useStyles = makeStyles()((theme) => ({
     fontSize: "12px",
     padding: "8px 20px",
     color: theme.palette.text.secondary,
+    "&:not(first-child)": {
+      marginTop: "24px",
+    },
   },
 }));
 
@@ -33,18 +40,44 @@ export function Navigator(): JSX.Element {
 
   return (
     <ul className={classes.wrapper}>
-      <h3 className={classes.title}>Glorzo Music</h3>
-      {routes.map((route) => (
-        <NavLink
-          className={({ isActive }) =>
-            clsx({ [classes.selectedNavLink]: isActive, [classes.navLink]: true })
-          }
-          key={route.path}
-          to={route.path!}
-        >
-          {route.label}
-        </NavLink>
-      ))}
+      <h3 className={classes.title}>现在就听</h3>
+      {routes
+        .filter((route) => route.group === "app")
+        .map((route) => {
+          const Icon = route.icon;
+          return (
+            <NavLink
+              draggable={false}
+              className={({ isActive }) =>
+                clsx({ [classes.selectedNavLink]: isActive, [classes.navLink]: true })
+              }
+              key={route.path}
+              to={route.path!}
+            >
+              <Icon fontSize="small" />
+              <span>{route.label}</span>
+            </NavLink>
+          );
+        })}
+
+      <h3 className={classes.title}>资料库</h3>
+      {routes
+        .filter((route) => route.group === "user")
+        .map((route) => {
+          const Icon = route.icon;
+          return (
+            <NavLink
+              className={({ isActive }) =>
+                clsx({ [classes.selectedNavLink]: isActive, [classes.navLink]: true })
+              }
+              key={route.path}
+              to={route.path!}
+            >
+              <Icon fontSize="small" />
+              <span>{route.label}</span>
+            </NavLink>
+          );
+        })}
     </ul>
   );
 }

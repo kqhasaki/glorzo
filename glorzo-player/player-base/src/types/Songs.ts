@@ -23,7 +23,7 @@ export type RemoteSong = {
   album: string;
   pictureUrl: string;
   audioUrl: string;
-  uploader: string;
+  uploader: number;
 };
 
 export type PlayerControls = {

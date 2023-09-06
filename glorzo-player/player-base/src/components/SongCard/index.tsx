@@ -3,8 +3,8 @@ import { getDownloadUrl } from "@glorzo-player/api/request";
 import { makeStyles } from "@glorzo-player/theme";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useAppDispatch } from "@glorzo-player/hooks";
-import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "@glorzo-player/hooks";
+import { useCallback, useMemo } from "react";
 import { loadSong } from "@glorzo-player/store/playerStateSlice";
 
 const useStyles = makeStyles<void, "image" | "operations">()((theme, _, classes) => ({
@@ -19,14 +19,16 @@ const useStyles = makeStyles<void, "image" | "operations">()((theme, _, classes)
     },
   },
   image: {
-    borderRadius: "7px",
     height: "100%",
     width: "100%",
   },
   imageWrapper: {
     width: "100%",
+    borderRadius: "7px",
     aspectRatio: "1 / 1",
     position: "relative",
+    overflow: "hidden",
+    border: `0.5px solid ${theme.palette.divider.secondary}`,
   },
   title: {
     color: theme.palette.text.primary,
@@ -61,11 +63,27 @@ const useStyles = makeStyles<void, "image" | "operations">()((theme, _, classes)
       color: theme.palette.text.highlight,
     },
   },
+  ownerBanner: {
+    position: "absolute",
+    width: "50px",
+    background: theme.palette.background.highlight,
+    color: theme.palette.text.highlight,
+    right: 0,
+    top: 0,
+    textAlign: "center",
+    fontSize: "13px",
+    transform: "rotate(45deg) translate(10px, -10px)",
+  },
 }));
 
 export function SongCard({ song }: { song: Song }): JSX.Element {
   const { classes } = useStyles();
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.userState.value);
+
+  const uploadedByCurrentUser = useMemo(() => {
+    return song.uploader === currentUser?.id;
+  }, [currentUser, song.uploader]);
 
   const selectSong = useCallback(() => {
     dispatch(
@@ -84,6 +102,7 @@ export function SongCard({ song }: { song: Song }): JSX.Element {
   return (
     <article className={classes.wrapper}>
       <div className={classes.imageWrapper}>
+        {uploadedByCurrentUser && <div className={classes.ownerBanner}>me</div>}
         <img
           draggable={false}
           className={classes.image}

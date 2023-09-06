@@ -5,6 +5,9 @@ import { HttpStatusCode, AxiosResponse } from "axios";
 import { Button } from "@glorzo-player/components/Button";
 import { makeStyles } from "@glorzo-player/theme";
 import { getHashedPassword } from "@glorzo-player/utils";
+import { useAppDispatch, useAppSelector } from "@glorzo-player/hooks";
+import { updateUser } from "@glorzo-player/store/userSlice";
+import { showLoginModal, closeLoginModal } from "@glorzo-player/store/globalLoginSlice";
 
 const useStyles = makeStyles()((theme) => ({
   form: {
@@ -19,9 +22,12 @@ const useStyles = makeStyles()((theme) => ({
       padding: "6px 8px",
       fontSize: "16px",
       width: "240px",
+      borderRadius: "4px",
       "&:focus": {
         outline: "none",
       },
+      background: theme.palette.background.secondary,
+      color: theme.palette.text.primary,
     },
     "& > div": {
       display: "block",
@@ -69,6 +75,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }): JSX.Element {
       validMessage: "",
     },
   });
+  const dispatch = useAppDispatch();
 
   const canSubmit = useMemo(() => {
     return [...Object.values(formData)].every((item) => item.valid);
@@ -80,8 +87,9 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }): JSX.Element {
       password: getHashedPassword(formData.password.value),
     });
     localStorage.setItem("glorzo-user", JSON.stringify(user));
+    dispatch(updateUser());
     onSuccess();
-  }, [formData, onSuccess]);
+  }, [formData, onSuccess, dispatch]);
 
   return (
     <form className={classes.form}>
@@ -236,8 +244,9 @@ function SignUpForm({ onSuccess }: { onSuccess: () => void }): JSX.Element {
 }
 
 export default function Login(): JSX.Element {
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const showGlobalLoginModal = useAppSelector((state) => state.globalLoginState.value);
+  const dispatch = useAppDispatch();
 
   useLayoutEffect(() => {
     axiosInstance.interceptors.response.use(
@@ -245,12 +254,12 @@ export default function Login(): JSX.Element {
       (error) => {
         const response = error.response as AxiosResponse;
         if (response.status === HttpStatusCode.Unauthorized) {
-          setModalOpen(true);
+          dispatch(showLoginModal());
         }
         return Promise.reject(error);
       }
     );
-  }, []);
+  }, [dispatch]);
 
   const { classes } = useStyles();
 
@@ -259,14 +268,14 @@ export default function Login(): JSX.Element {
       title="请登录您的Glorzo账号"
       height="540px"
       width="600px"
-      open={modalOpen}
+      open={showGlobalLoginModal}
       onClose={() => {
-        setModalOpen(false);
+        dispatch(closeLoginModal());
       }}
     >
       {mode === "signin" && (
         <>
-          <LoginForm onSuccess={() => setModalOpen(false)} />
+          <LoginForm onSuccess={() => dispatch(closeLoginModal())} />
           <div className={classes.navLine} onClick={() => setMode("signup")}>
             注册Glorzo账号
           </div>
