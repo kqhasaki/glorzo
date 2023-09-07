@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createMakeAndWithStyles } from "tss-react";
 
-type Theme = {
+export type Theme = {
   breakpoints: {
     sm: string;
     md: string;

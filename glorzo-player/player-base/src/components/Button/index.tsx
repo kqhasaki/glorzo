@@ -1,5 +1,5 @@
-import { makeStyles, useTheme } from "@glorzo-player/theme";
-import { ReactNode, useMemo } from "react";
+import { makeStyles, Theme } from "@glorzo-player/theme";
+import { ReactNode, useMemo, useRef } from "react";
 
 export type ButtonPropsType = {
   variant?: "outlined" | "contained" | "link";
@@ -12,11 +12,11 @@ export type ButtonPropsType = {
 
 const useStyles = makeStyles()(() => ({
   wrapper: {
+    transition: "200ms",
     display: "inline-flex",
     alignItems: "center",
     border: "none",
     padding: "8px 12px",
-    background: "none",
     cursor: "pointer",
     borderRadius: "4px",
     WebkitAppRegion: "no-drag",
@@ -30,6 +30,44 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
+function getColors(
+  color: NonNullable<ButtonPropsType["color"]>,
+  theme: Theme
+): {
+  fontColor: string;
+  backgroundColor: string;
+  hoverBackGroundColor: string;
+  hoverFontColor: string;
+} {
+  let exhaustiveCheck: never;
+  switch (color) {
+    case "highlight":
+      return {
+        fontColor: theme.palette.text.highlight,
+        backgroundColor: theme.palette.background.highlight,
+        hoverBackGroundColor: theme.palette.background.highlight,
+        hoverFontColor: theme.palette.text.highlight,
+      };
+    case "secondary":
+      return {
+        fontColor: theme.palette.text.secondary,
+        backgroundColor: theme.palette.background.secondary,
+        hoverBackGroundColor: theme.palette.background.primary,
+        hoverFontColor: theme.palette.text.primary,
+      };
+    case "primary":
+      return {
+        fontColor: theme.palette.text.primary,
+        backgroundColor: theme.palette.background.primary,
+        hoverBackGroundColor: theme.palette.background.primary,
+        hoverFontColor: theme.palette.text.primary,
+      };
+    default:
+      exhaustiveCheck = color;
+      return exhaustiveCheck;
+  }
+}
+
 export function Button({
   children,
   variant = "contained",
@@ -38,40 +76,44 @@ export function Button({
   onClick,
   size = "middle",
 }: ButtonPropsType): JSX.Element {
-  const { classes } = useStyles();
-  const theme = useTheme();
+  const { classes, theme, cx, css } = useStyles();
+  const button = useRef<HTMLButtonElement>(null);
 
   const styles: React.CSSProperties = useMemo(() => {
-    const textColor =
-      color === "highlight"
-        ? theme.palette.text.highlight
-        : color === "primary"
-        ? theme.palette.text.primary
-        : theme.palette.text.secondary;
-    const bgColor =
-      color === "highlight"
-        ? theme.palette.background.highlight
-        : color === "primary"
-        ? theme.palette.background.primary
-        : theme.palette.background.secondary;
-
-    const padding = size === "middle" ? "8px 12px" : size === "small" ? "4px 4px" : "12px 16px";
+    const padding = size === "large" ? "12px" : size === "middle" ? "8px" : "4px";
+    const colors = getColors(color, theme);
 
     switch (variant) {
-      case "outlined":
+      case "contained":
         return {
+          color: colors.fontColor,
+          border: `1px solid ${colors.fontColor}`,
+          background: colors.backgroundColor,
+          "&:hover": {
+            color: colors.hoverFontColor,
+            borderColor: colors.hoverFontColor,
+            background: colors.hoverBackGroundColor,
+          },
           padding,
         };
       case "link":
         return {
-          color: textColor,
           padding,
+          color: colors.fontColor,
+          background: "none",
+          "&:hover": {
+            color: colors.hoverFontColor,
+          },
         };
-      default:
+      case "outlined":
         return {
-          background: bgColor,
-          color: textColor,
           padding,
+          color: colors.fontColor,
+          background: colors.backgroundColor,
+          "&:hover": {
+            color: colors.hoverFontColor,
+            background: colors.hoverBackGroundColor,
+          },
         };
     }
   }, [variant, color, theme, size]);
@@ -79,15 +121,15 @@ export function Button({
   return (
     <button
       type="button"
-      style={styles}
-      className={classes.wrapper}
+      ref={button}
+      className={cx(css({ ...styles }), classes.wrapper)}
       onClick={
         disabled
           ? (e) => {
               e.preventDefault();
               return false;
             }
-          : onClick
+          : (e) => onClick?.({ ...e, target: button.current! })
       }
       disabled={disabled}
     >

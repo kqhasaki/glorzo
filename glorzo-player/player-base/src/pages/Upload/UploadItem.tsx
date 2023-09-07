@@ -2,6 +2,10 @@ import { makeStyles } from "@glorzo-player/theme";
 import { arrayBufferToBase64Str, getFormattedDuration } from "@glorzo-player/utils";
 import type { LocalSong as Song } from "@glorzo-player/types/Songs";
 import { clsx } from "clsx";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Button } from "@glorzo-player/components/Button";
+import { useGlobalClickMenu } from "@glorzo-player/contexts/GlobalClickMenu";
+import { useCallback } from "react";
 
 type UploadItemPropsType = {
   song: Song;
@@ -39,6 +43,7 @@ const useStyles = makeStyles()((theme) => ({
     alignItems: "center",
     gap: "8px",
     width: "40%",
+    position: "relative",
   },
   artist: {
     color: theme.palette.text.secondary,
@@ -55,6 +60,10 @@ const useStyles = makeStyles()((theme) => ({
   header: {
     color: theme.palette.text.secondary,
     fontWeight: "bold",
+  },
+  options: {
+    position: "absolute",
+    right: "0px",
   },
 }));
 
@@ -73,6 +82,15 @@ export function UploadHeader(): JSX.Element {
 
 export default function UploadItem({ song }: UploadItemPropsType): JSX.Element {
   const { classes } = useStyles();
+  const { createGlobalClickMenu } = useGlobalClickMenu();
+
+  const openOptions = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      const clientRects = (e.target as HTMLButtonElement).getBoundingClientRect();
+      createGlobalClickMenu({ x: clientRects.left, y: clientRects.top }, ["播放", "删除"]);
+    },
+    [createGlobalClickMenu]
+  );
 
   return (
     <div className={classes.wrapper}>
@@ -85,6 +103,12 @@ export default function UploadItem({ song }: UploadItemPropsType): JSX.Element {
           alt=""
         ></img>
         <div>{song.tags.title}</div>
+
+        <div className={classes.options}>
+          <Button variant="link" color="secondary" onClick={openOptions}>
+            <MoreHorizIcon />
+          </Button>
+        </div>
       </div>
 
       <div className={classes.artist}>{song.tags.artist}</div>
